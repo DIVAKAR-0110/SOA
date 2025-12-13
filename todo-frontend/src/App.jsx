@@ -1,34 +1,39 @@
 // src/App.jsx
 import { useEffect, useState } from "react";
-import Navbar from "./Components/Navbar/Navbar.jsx";
-import SplashScreen from "./Components/SplashScreen.jsx";
-import HeroSection from "./Components/HeroSection.jsx";
-import CategoriesSection from "./Components/CategoriesSection.jsx";
-import FloatingActions from "./Components/FloatingActions.jsx";
-import Footer from "./Components/Footer/Footer.jsx";
+import SplashScreen from "./Components/SplashScreen";
+import Home from "./Components/Home.jsx";
+import Complaints from "./Components/Complaints.jsx";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import CitizenSignup from "./Components/Signup/CitizenSignup.jsx";
+import AboutUs from "./Components/About/AboutUs.jsx";
+import ContactUs from "./Components/ContactUs/ContactUs.jsx";
+import CitizenLogin from "./Components/Login/CitizenLogin.jsx";
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowSplash(false), 3500); // 3.5 sec
-    return () => clearTimeout(timer);
+    const t = setTimeout(() => setShowSplash(false), 3000);
+    return () => clearTimeout(t);
   }, []);
 
   return (
-    <div className="page-root">
-      {showSplash && <SplashScreen />}
+    <BrowserRouter>
+      <div className="page-root">
+        {showSplash ? (
+          <SplashScreen />
+        ) : (
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/start_complaints" element={<Complaints />} />
 
-      <Navbar />
-
-      <main className="page-main">
-        <HeroSection />
-        <CategoriesSection />
-      </main>
-
-      <FloatingActions />
-
-      <Footer />
-    </div>
+            <Route path="/citizen_signup" element={<CitizenSignup />} />
+            <Route path="/citizen_login" element={<CitizenLogin />} />
+            <Route path="/about_us" element={<AboutUs />} />
+            <Route path="/contact_us" element={<ContactUs />} />
+          </Routes>
+        )}
+      </div>
+    </BrowserRouter>
   );
 }

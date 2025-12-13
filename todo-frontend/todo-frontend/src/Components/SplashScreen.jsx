@@ -1,6 +1,4 @@
 // src/components/SplashScreen.jsx
-import "../styles/animations.css";
-//import "../styles/layout.css";
 export default function SplashScreen() {
   return (
     <div className="splash-overlay">
