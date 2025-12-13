@@ -1,0 +1,181 @@
+/* styles/slider.css */
+
+.hero-wrap {
+  background: radial-gradient(circle at top left, #0b1120 0, #020617 55%, #020617 100%);
+  color: #e5e7eb;
+  padding: 1.8rem 0 2.5rem;
+}
+
+.hero-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: grid;
+  gap: 1.8rem;
+}
+
+@media (min-width: 900px) {
+  .hero-inner {
+    grid-template-columns: 1.3fr 1fr;
+    align-items: center;
+  }
+}
+
+.hero-left {
+  position: relative;
+}
+
+.hero-tagline {
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #93c5fd;
+  margin-bottom: 0.6rem;
+}
+
+.hero-heading {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+}
+
+@media (min-width: 900px) {
+  .hero-heading {
+    font-size: 2.3rem;
+  }
+}
+
+.hero-text {
+  font-size: 0.88rem;
+  color: #cbd5f5;
+  max-width: 450px;
+}
+
+.hero-controls {
+  margin-top: 1.2rem;
+  display: flex;
+  gap: 0.6rem;
+}
+
+.hero-arrow {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(15, 23, 42, 0.9);
+  color: #e5e7eb;
+  font-size: 1.4rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.hero-arrow:hover {
+  background: #1d4ed8;
+}
+
+.hero-dots-wrap {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 1rem;
+}
+
+.hero-dot {
+  flex: 1;
+  height: 4px;
+  border-radius: 999px;
+  border: none;
+  background: #1f2937;
+  cursor: pointer;
+}
+
+.hero-dot--active {
+  background: linear-gradient(90deg, #0ea5e9, #22c55e);
+}
+
+/* Right box */
+.hero-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.hero-image-shell {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+  border-radius: 1.2rem;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(15, 23, 42, 0.9);
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
+
+.hero-image-shell:hover {
+  transform: translateY(-4px);
+}
+
+.hero-main-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+@media (min-width: 900px) {
+  .hero-main-image {
+    height: 300px;
+  }
+}
+
+.hero-image-overlay {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.75rem;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.95), transparent);
+}
+
+/* CTA with ripple */
+.hero-cta-btn {
+  position: relative;
+  overflow: hidden;
+  border-radius: 999px;
+  border: none;
+  padding: 0.7rem 1.8rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(135deg, #2563eb, #22c55e);
+  color: #f9fafb;
+  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.45);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.hero-cta-btn:hover {
+  box-shadow: 0 14px 40px rgba(37, 99, 235, 0.7);
+  transform: translateY(-1px);
+}
+
+/* ripple span */
+.hero-cta-btn .ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(248, 250, 252, 0.3);
+  transform: scale(0);
+  animation: ripple-effect 0.5s linear;
+}
+
+@keyframes ripple-effect {
+  to {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* Mobile behavior: image moves below on small screens handled by grid stacking */

@@ -1,0 +1,236 @@
+/* Root layout */
+
+.complaints-page {
+  min-height: 100vh;
+  padding: 1.8rem 1rem 2.4rem;
+  background: radial-gradient(circle at top left, #020617 0, #020617 35%, #0f172a 90%);
+  color: #e5e7eb;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Header + back button */
+
+.complaints-header {
+  max-width: 1100px;
+  margin: 0 auto 1.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.complaints-back-btn {
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.8);
+  background: rgba(15, 23, 42, 0.96);
+  color: #e5e7eb;
+  font-size: 0.9rem;
+  padding: 0.4rem 1.1rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.8);
+  transition: background 0.18s, transform 0.18s, box-shadow 0.18s;
+}
+
+.complaints-back-btn:hover {
+  background: #111827;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.85);
+}
+
+.complaints-title-block {
+  flex: 1;
+  min-width: 220px;
+}
+
+.complaints-title-block h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.complaints-title-block p {
+  font-size: 0.95rem;
+  color: #cbd5f5;
+}
+
+/* Grid of cards */
+
+.complaints-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  gap: 1.4rem;
+}
+
+@media (min-width: 900px) {
+  .complaints-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Base card */
+
+.complaint-card {
+  position: relative;
+  padding-top: 1.3rem;
+  border-radius: 1.4rem;
+  background: radial-gradient(circle at top left, #020617, #020617 40%, #020617 60%, #020617 100%);
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.75);
+  overflow: hidden;
+  transform: translateY(0);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.complaint-card::before {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background:
+    radial-gradient(circle at top left, rgba(56, 189, 248, 0.24), transparent),
+    radial-gradient(circle at bottom right, rgba(52, 211, 153, 0.2), transparent);
+  opacity: 0.28;
+  mix-blend-mode: screen;
+}
+
+/* Hover effect */
+
+.complaint-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.9);
+  border-color: rgba(96, 165, 250, 0.9);
+}
+
+/* Ribbon heading with icon */
+
+.complaint-card-ribbon {
+  position: relative;
+  z-index: 1;
+  margin: 0 1rem;
+  padding: 0.5rem 0.9rem 0.5rem 0.7rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: linear-gradient(120deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.96));
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.9);
+}
+
+/* colored ribbons by type */
+
+.complaint-card--civic .complaint-card-ribbon {
+  background: linear-gradient(135deg, #22c55e, #0ea5e9);
+}
+
+.complaint-card--governance .complaint-card-ribbon {
+  background: linear-gradient(135deg, #6366f1, #0ea5e9);
+}
+
+.complaint-card--criminal .complaint-card-ribbon {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+}
+
+.complaint-card--electoral .complaint-card-ribbon {
+  background: linear-gradient(135deg, #facc15, #2563eb);
+}
+
+.complaint-card--consumer .complaint-card-ribbon {
+  background: linear-gradient(135deg, #06b6d4, #22c55e);
+}
+
+.complaint-card--police .complaint-card-ribbon {
+  background: linear-gradient(135deg, #0f766e, #1e293b);
+}
+
+.complaint-card-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.complaint-card-title {
+  color: #f9fafb;
+}
+
+/* Body */
+
+.complaint-card-body {
+  position: relative;
+  z-index: 1;
+  padding: 0.8rem 1.1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+/* Sections */
+
+.complaint-card-section h2 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e5e7eb;
+  margin-bottom: 0.25rem;
+}
+
+.complaint-card-section ul {
+  padding-left: 1rem;
+  margin: 0;
+}
+
+.complaint-card-section li {
+  font-size: 0.86rem;
+  color: #cbd5f5;
+  margin-bottom: 0.2rem;
+}
+
+.complaint-card-section--note {
+  padding-top: 0.4rem;
+  border-top: 1px dashed rgba(148, 163, 184, 0.6);
+  margin-top: 0.2rem;
+}
+
+.complaint-card-section--note p {
+  font-size: 0.84rem;
+  color: #f97316;
+}
+
+/* Card hover icon pulse */
+
+.complaint-card:hover .complaint-card-icon {
+  animation: complaint-icon-pulse 0.8s ease-in-out;
+}
+
+@keyframes complaint-icon-pulse {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Responsive tweaks */
+
+@media (max-width: 600px) {
+  .complaints-title-block h1 {
+    font-size: 1.5rem;
+  }
+
+  .complaint-card-section li {
+    font-size: 0.84rem;
+  }
+}
