@@ -1,10 +1,23 @@
+<<<<<<< HEAD
 # Logs
 logs
 *.log
+=======
+# Node
+node_modules/
+**/node_modules/
+
+# Env files
+.env
+*.env
+
+# Logs
+>>>>>>> 91782085aa5bb0c043042d45e33f8e3a24d3e793
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+<<<<<<< HEAD
 lerna-debug.log*
 
 node_modules
@@ -17,8 +30,51 @@ dist-ssr
 !.vscode/extensions.json
 .idea
 .DS_Store
+=======
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build output
+dist/
+build/
+coverage/
+
+# Vite
+.vite
+
+# IDEs
+.vscode/
+.idea/
+>>>>>>> 91782085aa5bb0c043042d45e33f8e3a24d3e793
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
+<<<<<<< HEAD
 *.sw?
+=======
+
+# Mac
+*.DS_Store
+
+# Windows
+ehthumbs.db
+
+# Misc
+*.log
+
+# Ignore local database for development
+*.db
+
+# Ignore local JetBrains
+.idea/
+
+# Ignore package-lock from other package managers
+package-lock.json
+
+# Ignore backend .env specifically
+mern-backend/.env
+mern-frontend/.env
+>>>>>>> 91782085aa5bb0c043042d45e33f8e3a24d3e793
