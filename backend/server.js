@@ -1,285 +1,276 @@
-// server.js
 const express = require("express");
-const mongoose = require("mongoose");
+const mysql = require("mysql2");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
-const nodemailer = require("nodemailer");
+const sendOtpEmail = require("./mailer");
 
 const app = express();
-const PORT = 3000;
-
-// ==== CONFIG ====
-
-// your existing cluster URI – add a DB name at the end
-const MONGO_URI =
-  "mongodb+srv://akshuraj2k6_db_user:oCTX1rixcaZchptC@cluster0.nkzfgmg.mongodb.net/ocms_db";
-
-// configure mail (Gmail example: use app password)
-const MAIL_USER = "yourgmail@gmail.com";
-const MAIL_PASS = "your_app_password";
-
-// ==== MIDDLEWARE ====
-
 app.use(cors());
 app.use(express.json());
 
-// ==== NODEMAILER TRANSPORT ====
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: MAIL_USER,
-    pass: MAIL_PASS,
-  },
+// ---------------- DB CONNECTION ----------------
+const db = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "R_diva_0110_",
+  database: "complaint_db",
 });
 
-async function sendOtp(email, code) {
-  const mailOptions = {
-    from: `"OCMS Support" <${MAIL_USER}>`,
-    to: email,
-    subject: "OCMS - Email Verification OTP",
-    text: `Your OCMS verification OTP is: ${code}. It is valid for 10 minutes.`,
-  };
-  await transporter.sendMail(mailOptions);
-}
-
-// ==== MONGOOSE SCHEMA/MODEL ====
-
-const addressSchema = new mongoose.Schema(
-  {
-    line1: String,
-    line2: String,
-    city: String,
-    district: String,
-    state: String,
-    country: String,
-    pincode: String,
-  },
-  { _id: false }
-);
-
-const govIdSchema = new mongoose.Schema(
-  {
-    type: String, // aadhaar | pan | voter | dl
-    last4: String,
-    verifiedFlag: { type: Boolean, default: false },
-  },
-  { _id: false }
-);
-
-const preferencesSchema = new mongoose.Schema(
-  {
-    language: { type: String, default: "English" },
-    notifySms: { type: Boolean, default: true },
-    notifyEmail: { type: Boolean, default: true },
-    notifyWhatsApp: { type: Boolean, default: false },
-  },
-  { _id: false }
-);
-
-const securitySchema = new mongoose.Schema(
-  {
-    questionId: String,
-    answerHash: String,
-  },
-  { _id: false }
-);
-
-const consentSchema = new mongoose.Schema(
-  {
-    termsAcceptedAt: Date,
-    privacyAcceptedAt: Date,
-  },
-  { _id: false }
-);
-
-const citizenSchema = new mongoose.Schema(
-  {
-    name: {
-      first: { type: String, required: true },
-      last: { type: String, required: true },
-    },
-    dob: { type: Date, required: true },
-    gender: String,
-    mobile: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    emailVerified: { type: Boolean, default: false },
-    mobileVerified: { type: Boolean, default: false },
-    passwordHash: { type: String, required: true },
-    address: addressSchema,
-    govId: govIdSchema,
-    preferences: preferencesSchema,
-    security: securitySchema,
-    consent: consentSchema,
-    lastLoginAt: Date,
-  },
-  { timestamps: true }
-);
-
-citizenSchema.methods.checkPassword = function (plain) {
-  return bcrypt.compare(plain, this.passwordHash);
-};
-
-citizenSchema.statics.createWithPassword = async function (payload) {
-  const passwordHash = await bcrypt.hash(payload.password, 10);
-  const answerHash = payload.securityAnswer
-    ? await bcrypt.hash(payload.securityAnswer, 10)
-    : undefined;
-
-  return this.create({
-    name: { first: payload.firstName, last: payload.lastName },
-    dob: payload.dob,
-    gender: payload.gender,
-    mobile: payload.mobile,
-    email: payload.email,
-    emailVerified: true,
-    passwordHash,
-    address: {
-      line1: payload.addressLine1,
-      line2: payload.addressLine2,
-      city: payload.city,
-      district: payload.district,
-      state: payload.state,
-      country: payload.country,
-      pincode: payload.pincode,
-    },
-    govId: {
-      type: payload.govIdType,
-      last4: payload.govIdLast4,
-    },
-    preferences: {
-      language: payload.language,
-      notifySms: payload.notifySms,
-      notifyEmail: payload.notifyEmail,
-      notifyWhatsApp: payload.notifyWhatsApp,
-    },
-    security: {
-      questionId: payload.securityQuestion,
-      answerHash,
-    },
-    consent: {
-      termsAcceptedAt: payload.termsAcceptedAt,
-      privacyAcceptedAt: payload.privacyAcceptedAt,
-    },
-  });
-};
-
-const Citizen = mongoose.model("Citizen", citizenSchema);
-
-// ==== SIMPLE IN-MEMORY OTP STORE (replace with Mongo/Redis in prod) ====
-
-const PendingOtp = new Map();
-
-function generateOtp() {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-}
-
-// ==== ROUTES ====
-
-// health check
-app.get("/", (req, res) => {
-  res.json({ status: "ok", service: "OCMS registration API" });
+db.connect((err) => {
+  if (err) {
+    console.error("MySQL connection failed:", err);
+    process.exit(1);
+  }
+  console.log("MySQL connected");
 });
 
-// prepare registration: validate, generate OTP, send email
-app.post("/api/auth/register/prepare", async (req, res) => {
+
+// ---------------- GENERATE OTP ----------------
+app.post("/get_otp", async (req, res) => {
   try {
-    const {
-      firstName,
-      lastName,
-      dob,
-      mobile,
-      email,
-      password,
-      confirmPassword,
-      acceptTerms,
-      acceptPrivacy,
-    } = req.body;
+    const form = req.body;
 
-    if (
-      !firstName ||
-      !lastName ||
-      !dob ||
-      !mobile ||
-      !email ||
-      !password ||
-      !confirmPassword
-    ) {
-      return res.status(400).json({ message: "Missing required fields." });
+    if (!form.acceptTerms || !form.acceptPrivacy) {
+      return res.status(400).json({ message: "Consent required" });
     }
 
-    if (!acceptTerms || !acceptPrivacy) {
-      return res
-        .status(400)
-        .json({ message: "Please accept Terms and Privacy Policy." });
+    if (form.password !== form.confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
     }
 
-    if (password !== confirmPassword) {
-      return res.status(400).json({ message: "Passwords do not match." });
-    }
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
 
-    const existing = await Citizen.findOne({ email });
-    if (existing) {
-      return res.status(400).json({ message: "Email already registered." });
-    }
+    db.query(
+      `REPLACE INTO citizen_otps (email, otp, form_data, expires_at) VALUES (?, ?, ?, ?)`,
+      [form.email, otp, JSON.stringify(form), expiresAt],
+      async (err) => {
+        if (err) {
+          console.error("DB Error:", err);
+          return res.status(500).json({ message: "OTP storage failed" });
+        }
 
-    const otp = generateOtp();
-    const expiresAt = Date.now() + 10 * 60 * 1000;
-
-    PendingOtp.set(email, { otp, expiresAt, payload: req.body });
-
-    await sendOtp(email, otp);
-
-    return res.json({ message: "OTP sent to email." });
+        try {
+          await sendOtpEmail(form.email, otp);
+          res.json({ message: "OTP sent to email successfully" });
+        } catch (mailErr) {
+          console.error("Mail Error:", mailErr);
+          res.status(500).json({ message: "OTP email failed" });
+        }
+      }
+    );
   } catch (err) {
-    console.error("register/prepare error", err);
-    return res.status(500).json({ message: "Server error." });
+    console.error("Server Error:", err);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
-// verify OTP and create citizen
-app.post("/api/auth/register/verify", async (req, res) => {
-  try {
-    const { email, otp } = req.body;
-    const record = PendingOtp.get(email);
+// ---------------- VERIFY OTP ----------------
+app.post("/verify_otp", async (req, res) => {
+  const { email, otp } = req.body;
 
-    if (!record) {
-      return res.status(400).json({ message: "No OTP request found." });
-    }
-
-    if (Date.now() > record.expiresAt) {
-      PendingOtp.delete(email);
-      return res.status(400).json({ message: "OTP expired." });
-    }
-
-    if (record.otp !== otp) {
-      return res.status(400).json({ message: "Invalid OTP." });
-    }
-
-    const payload = record.payload;
-    payload.termsAcceptedAt = new Date();
-    payload.privacyAcceptedAt = new Date();
-
-    await Citizen.createWithPassword(payload);
-    PendingOtp.delete(email);
-
-    return res.json({ message: "Registration successful." });
-  } catch (err) {
-    console.error("register/verify error", err);
-    return res.status(500).json({ message: "Server error." });
+  if (!email || !otp) {
+    return res.status(400).json({ message: "Email and OTP required" });
   }
+
+  db.query(
+    `SELECT * FROM citizen_otps WHERE email=? AND otp=? AND expires_at > NOW()`,
+    [email, otp],
+    async (err, rows) => {
+      if (err) {
+        console.error("OTP Select Error:", err);
+        return res.status(500).json({ message: "Server error" });
+      }
+
+      if (rows.length === 0) {
+        return res.status(400).json({ message: "Invalid or expired OTP" });
+      }
+
+      let form;
+      try {
+        form = JSON.parse(rows[0].form_data);
+      } catch (parseErr) {
+        console.error("JSON Parse Error:", parseErr);
+        return res.status(500).json({ message: "Corrupted registration data" });
+      }
+
+      try {
+        const hashedPassword = await bcrypt.hash(form.password, 10);
+
+        const insertQuery = `INSERT INTO CitizenSignup (
+          first_name, last_name, dob, gender, mobile, email, password,
+          country, state, district, city, pincode,
+          address_line1, address_line2,
+          gov_id_type, gov_id_last4, alt_phone,
+          language, notify_sms, notify_email, notify_whatsapp
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+
+        const values = [
+          form.firstName,
+          form.lastName,
+          form.dob,
+          form.gender,
+          form.mobile,
+          form.email,
+          hashedPassword,
+          form.country,
+          form.state,
+          form.district,
+          form.city,
+          form.pincode,
+          form.addressLine1,
+          form.addressLine2,
+          form.govIdType,
+          form.govIdLast4,
+          form.altPhone,
+          form.language,
+          form.notifySms ? 1 : 0,
+          form.notifyEmail ? 1 : 0,
+          form.notifyWhatsApp ? 1 : 0,
+        ];
+
+        db.query(insertQuery, values, (insertErr) => {
+          if (insertErr) {
+            console.error("DB Insert Error:", insertErr);
+            return res.status(500).json({ message: "User creation failed" });
+          }
+
+          db.query("DELETE FROM citizen_otps WHERE email=?", [email]);
+          res.json({ message: "Registration successful" });
+        });
+      } catch (hashErr) {
+        console.error("Hash Error:", hashErr);
+        res.status(500).json({ message: "Password hashing failed" });
+      }
+    }
+  );
 });
 
-// ==== DB CONNECT + SERVER START ====
+app.post("/login/password", (req, res) => {
+  const { email, password } = req.body;
 
-mongoose
-  .connect(MONGO_URI)
-  .then(() => {
-    console.log("Connected to MongoDB");
-    app.listen(PORT, () => {
-      console.log(`Server running at http://localhost:${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.error("Failed to connect to MongoDB", err);
-  });
+  db.query(
+    "SELECT id, password FROM citizensignup WHERE email=?",
+    [email],
+    async (err, rows) => {
+      if (err || rows.length === 0) {
+        return res.status(400).json({ message: "Invalid email or password" });
+      }
+
+      const match = await bcrypt.compare(password, rows[0].password);
+      if (!match) {
+        return res.status(400).json({ message: "Invalid email or password" });
+      }
+
+      res.json({ message: "Login successful" });
+    }
+  );
+});
+
+app.post("/login/request-otp", (req, res) => {
+  const { email } = req.body;
+
+  db.query(
+    "SELECT id FROM citizensignup WHERE email=?",
+    [email],
+    async (err, rows) => {
+      if (rows.length === 0) {
+        return res.status(400).json({ message: "Email not registered" });
+      }
+
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+
+      db.query(
+        `REPLACE INTO login_otps (email, otp, purpose, expires_at)
+         VALUES (?, ?, 'login', ?)`,
+        [email, otp, expiresAt],
+        async (err) => {
+          if (err) return res.status(500).json({ message: "OTP failed" });
+
+          await sendOtpEmail(email, otp);
+          res.json({ message: "OTP sent for login" });
+        }
+      );
+    }
+  );
+});
+
+app.post("/login/verify-otp", (req, res) => {
+  const { email, otp } = req.body;
+
+  db.query(
+    `SELECT * FROM login_otps
+     WHERE email=? AND otp=? AND purpose='login' AND expires_at > NOW()`,
+    [email, otp],
+    (err, rows) => {
+      if (err || rows.length === 0) {
+        return res.status(400).json({ message: "Invalid or expired OTP" });
+      }
+
+      db.query("DELETE FROM login_otps WHERE email=?", [email]);
+      res.json({ message: "Login successful via OTP" });
+    }
+  );
+});
+
+
+app.post("/forgot/request-otp", (req, res) => {
+  const { email } = req.body;
+
+  db.query(
+    "SELECT id FROM citizensignup WHERE email=?",
+    [email],
+    async (err, rows) => {
+      if (rows.length === 0) {
+        return res.status(400).json({ message: "Email not registered" });
+      }
+
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+
+      db.query(
+        `REPLACE INTO login_otps (email, otp, purpose, expires_at)
+         VALUES (?, ?, 'forgot', ?)`,
+        [email, otp, expiresAt],
+        async () => {
+          await sendOtpEmail(email, otp);
+          res.json({ message: "Password reset OTP sent" });
+        }
+      );
+    }
+  );
+});
+
+
+app.post("/forgot/verify-otp", async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+
+  db.query(
+    `SELECT * FROM login_otps
+     WHERE email=? AND otp=? AND purpose='forgot' AND expires_at > NOW()`,
+    [email, otp],
+    async (err, rows) => {
+      if (rows.length === 0) {
+        return res.status(400).json({ message: "Invalid or expired OTP" });
+      }
+
+      const hashed = await bcrypt.hash(newPassword, 10);
+
+      db.query(
+        "UPDATE citizens SET password=? WHERE email=?",
+        [hashed, email],
+        () => {
+          db.query("DELETE FROM login_otps WHERE email=?", [email]);
+          res.json({ message: "Password updated successfully" });
+        }
+      );
+    }
+  );
+});
+
+
+// ---------------- SERVER START ----------------
+app.listen(5000, () => {
+  console.log("Server running on port 5000");
+});
