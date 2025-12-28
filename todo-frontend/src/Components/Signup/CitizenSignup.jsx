@@ -2,6 +2,9 @@
 import { useState } from "react";
 import "./CitizenSignup.css";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const initialForm = {
   firstName: "",
@@ -26,8 +29,6 @@ const initialForm = {
   notifySms: true,
   notifyEmail: true,
   notifyWhatsApp: false,
-  securityQuestion: "",
-  securityAnswer: "",
   acceptTerms: false,
   acceptPrivacy: false,
 };
@@ -35,17 +36,36 @@ const initialForm = {
 export default function CitizenSignup() {
   const [form, setForm] = useState(initialForm);
   const [otp, setOtp] = useState("");
-  const [step, setStep] = useState("form"); // form | otp | done
+  const [passwordMatch, setPasswordMatch] = useState(null);
+  const [step, setStep] = useState("form");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+  // put this ABOVE return (inside your component)
+  const eighteenYearsAgo = new Date();
+  eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+
+    setForm((prev) => {
+      const updated = {
+        ...prev,
+        [name]: type === "checkbox" ? checked : value,
+      };
+
+      if (name === "password" || name === "confirmPassword") {
+        if (updated.confirmPassword.length > 0) {
+          setPasswordMatch(updated.password === updated.confirmPassword);
+        } else {
+          setPasswordMatch(null);
+        }
+      }
+
+      return updated;
+    });
   };
 
   const handleRequestOtp = async (e) => {
@@ -63,14 +83,11 @@ export default function CitizenSignup() {
 
     setLoading(true);
     try {
-      const res = await fetch(
-        "http://localhost:5000/api/auth/register/prepare",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(form),
-        }
-      );
+      const res = await fetch("http://localhost:5000/get_otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
       const data = await res.json();
       if (!res.ok) {
         setMessage(data.message || "Failed to send OTP.");
@@ -94,14 +111,11 @@ export default function CitizenSignup() {
     }
     setLoading(true);
     try {
-      const res = await fetch(
-        "http://localhost:5000/api/auth/register/verify",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: form.email, otp }),
-        }
-      );
+      const res = await fetch("http://localhost:5000/verify_otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: form.email, otp }),
+      });
       const data = await res.json();
       if (!res.ok) {
         setMessage(data.message || "Invalid or expired OTP.");
@@ -146,7 +160,6 @@ export default function CitizenSignup() {
     "Uttarakhand",
     "West Bengal",
 
-    // UTs
     "Andaman and Nicobar Islands",
     "Chandigarh",
     "Dadra & Nagar Haveli and Daman & Diu",
@@ -334,8 +347,6 @@ export default function CitizenSignup() {
         >
           ONLINE COMPLAINT MANAGEMENT SYSTEM
         </h1>
-
-        {/* Subtitle */}
         <h3
           style={{
             fontSize: "20px",
@@ -360,6 +371,7 @@ export default function CitizenSignup() {
 
           {message && <div className="signup-message">{message}</div>}
 
+          {/* Step 1: Registration Form */}
           {step === "form" && (
             <form className="signup-form" onSubmit={handleRequestOtp}>
               <section className="signup-section">
@@ -385,11 +397,23 @@ export default function CitizenSignup() {
                   </div>
                   <div className="field">
                     <label>Date of birth *</label>
-                    <input
-                      type="date"
-                      name="dob"
-                      value={form.dob}
-                      onChange={handleChange}
+                    <DatePicker
+                      selected={form.dob ? new Date(form.dob) : null}
+                      onChange={(date) =>
+                        handleChange({
+                          target: {
+                            name: "dob",
+                            value: date ? date.toISOString().split("T")[0] : "",
+                          },
+                        })
+                      }
+                      dateFormat="dd/MM/yyyy"
+                      maxDate={eighteenYearsAgo}
+                      showYearDropdown
+                      showMonthDropdown
+                      dropdownMode="select"
+                      placeholderText="Select your date of birth"
+                      className="date-input"
                       required
                     />
                   </div>
@@ -400,19 +424,23 @@ export default function CitizenSignup() {
                       value={form.gender}
                       onChange={handleChange}
                     >
-                      <option value="">Prefer not to say</option>
+                      <option value="">-- Select --</option>
                       <option value="male">Male</option>
                       <option value="female">Female</option>
                       <option value="other">Other</option>
                     </select>
                   </div>
                   <div className="field">
-                    <label>Mobile number *</label>
+                    <label>Mobile number * (+91)</label>
                     <input
                       type="tel"
                       name="mobile"
                       value={form.mobile}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, "");
+                        if (value.length <= 10)
+                          handleChange({ target: { name: "mobile", value } });
+                      }}
                       required
                     />
                   </div>
@@ -428,50 +456,51 @@ export default function CitizenSignup() {
                   </div>
                   <div className="field">
                     <label>Password *</label>
-                    <input
-                      type="password"
-                      name="password"
-                      value={form.password}
-                      onChange={handleChange}
-                      required
-                      minLength={8}
-                    />
+                    <div className="password-wrapper">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        value={form.password}
+                        onChange={handleChange}
+                        required
+                        minLength={8}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? "Hide" : "Show"}
+                      </button>
+                    </div>
                   </div>
                   <div className="field">
                     <label>Confirm password *</label>
-                    <input
-                      type="password"
-                      name="confirmPassword"
-                      value={form.confirmPassword}
-                      onChange={handleChange}
-                      required
-                      minLength={8}
-                    />
-                  </div>
-                  <div className="field">
-                    <label>Security question *</label>
-                    <select
-                      name="securityQuestion"
-                      value={form.securityQuestion}
-                      onChange={handleChange}
-                      required
-                    >
-                      <option value="">Select a question</option>
-                      <option value="school">Your first school name?</option>
-                      <option value="pet">Your first pet name?</option>
-                      <option value="city">City where you were born?</option>
-                    </select>
-                  </div>
-                  <div className="field">
-                    <label>Security answer *</label>
-                    <input
-                      name="securityAnswer"
-                      value={form.securityAnswer}
-                      onChange={handleChange}
-                      required
-                    />
+                    <div className="password-wrapper">
+                      <input
+                        type={showConfirmPassword ? "text" : "password"}
+                        name="confirmPassword"
+                        value={form.confirmPassword}
+                        onChange={handleChange}
+                        required
+                        minLength={8}
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                      >
+                        {showConfirmPassword ? "Hide" : "Show"}
+                      </button>
+                    </div>
                   </div>
                 </div>
+                {passwordMatch === false && (
+                  <p className="error-text">❌ Passwords do not match</p>
+                )}
+                {passwordMatch === true && (
+                  <p className="success-text">✅ Passwords match</p>
+                )}
               </section>
 
               <section className="signup-section">
@@ -497,10 +526,9 @@ export default function CitizenSignup() {
                       className="ocms-select"
                     >
                       <option value="">Select State / Union Territory</option>
-
-                      {STATES_AND_UTS.map((item, index) => (
-                        <option key={index} value={item}>
-                          {item}
+                      {STATES_AND_UTS.map((state, i) => (
+                        <option key={i} value={state}>
+                          {state}
                         </option>
                       ))}
                     </select>
@@ -514,16 +542,14 @@ export default function CitizenSignup() {
                       required
                     >
                       <option value="">Select District</option>
-
                       {form.state &&
-                        DISTRICTS[form.state]?.map((district, index) => (
-                          <option key={index} value={district}>
-                            {district}
+                        DISTRICTS[form.state]?.map((dist, i) => (
+                          <option key={i} value={dist}>
+                            {dist}
                           </option>
                         ))}
                     </select>
                   </div>
-
                   <div className="field">
                     <label>City / Town *</label>
                     <select
@@ -533,10 +559,9 @@ export default function CitizenSignup() {
                       required
                     >
                       <option value="">Select City / Town</option>
-
                       {form.district &&
-                        CITIES[form.district]?.map((city, index) => (
-                          <option key={index} value={city}>
+                        CITIES[form.district]?.map((city, i) => (
+                          <option key={i} value={city}>
                             {city}
                           </option>
                         ))}
@@ -548,14 +573,15 @@ export default function CitizenSignup() {
                       type="text"
                       name="pincode"
                       value={form.pincode}
-                      onChange={handleChange}
-                      required
-                      pattern="\d{6}"
-                      maxLength="6"
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, "");
+                        if (value.length <= 6)
+                          handleChange({ target: { name: "pincode", value } });
+                      }}
                       placeholder="Enter 6-digit PIN code"
+                      required
                     />
                   </div>
-
                   <div className="field field--full">
                     <label>Address line 1 *</label>
                     <input
@@ -577,16 +603,17 @@ export default function CitizenSignup() {
               </section>
 
               <section className="signup-section">
-                <h2>Identity </h2>
+                <h2>Identity</h2>
                 <div className="signup-grid">
                   <div className="field">
-                    <label>Government ID type</label>
+                    <label>Government ID type *</label>
                     <select
                       name="govIdType"
                       value={form.govIdType}
                       onChange={handleChange}
+                      required
                     >
-                      <option value="">None</option>
+                      <option value="">-- Select ID Type --</option>
                       <option value="aadhaar">Aadhaar</option>
                       <option value="pan">PAN</option>
                       <option value="voter">Voter ID</option>
@@ -594,21 +621,32 @@ export default function CitizenSignup() {
                     </select>
                   </div>
                   <div className="field">
-                    <label>ID last 4 digits</label>
+                    <label>ID last 4 digits *</label>
                     <input
                       name="govIdLast4"
                       value={form.govIdLast4}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, "");
+                        if (value.length <= 4)
+                          handleChange({
+                            target: { name: "govIdLast4", value },
+                          });
+                      }}
                       maxLength={4}
+                      required
                     />
                   </div>
                   <div className="field">
                     <label>Alternate phone</label>
                     <input
+                      type="tel"
                       name="altPhone"
                       value={form.altPhone}
-                      onChange={handleChange}
-                      type="tel"
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, "");
+                        if (value.length <= 10)
+                          handleChange({ target: { name: "altPhone", value } });
+                      }}
                     />
                   </div>
                 </div>
@@ -625,9 +663,9 @@ export default function CitizenSignup() {
                       onChange={handleChange}
                     >
                       <option value="English">English</option>
-                      <option value="Hindi">Hindi</option>
-                      <option value="Tamil">Tamil</option>
-                      <option value="Other">Other</option>
+                      <option value="Hindi">ಕನ್ನಡ</option>
+                      <option value="Tamil">தமிழ்</option>
+                      <option value="Other">Malayalam</option>
                     </select>
                   </div>
                   <div className="field field--checkboxes">
@@ -700,6 +738,7 @@ export default function CitizenSignup() {
             </form>
           )}
 
+          {/* Step 2: OTP Verification */}
           {step === "otp" && (
             <form className="signup-otp-form" onSubmit={handleVerifyOtp}>
               <h2>Email verification</h2>
@@ -711,7 +750,7 @@ export default function CitizenSignup() {
                 <label>OTP</label>
                 <input
                   value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
                   maxLength={6}
                   required
                 />
@@ -726,10 +765,23 @@ export default function CitizenSignup() {
             </form>
           )}
 
+          {/* Step 3: Success */}
           {step === "done" && (
             <div className="signup-complete">
               <h2>Registration successful</h2>
               <p>You can now login with your email and password.</p>
+              <br />
+              <Link
+                to="/citizen_login"
+                className="signup-submit"
+                style={{
+                  width: "150px",
+                  display: "inline-block",
+                  textAlign: "center",
+                }}
+              >
+                Let's Login
+              </Link>
             </div>
           )}
         </div>

@@ -1,0 +1,242 @@
+/* src/pages/RoleEntry.css */
+
+.re-root {
+  min-height: 120vh;
+  padding: 18px 16px 22px;
+  background: radial-gradient(circle at top left, #111827 0, #020617 40%, #000 100%);
+  color: #e5e7eb;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Topbar */
+.re-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.re-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.re-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 20%, #22c55e, #3b82f6 55%, #0f172a 90%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+  color: #ecfdf5;
+}
+
+.re-title {
+  font-size: 23px;
+  font-weight: 900;
+}
+
+.re-subtitle {
+  font-size: 25px;
+  color: #9ca3af;
+}
+
+.re-nav {
+  display: flex;
+  gap: 18px;
+}
+
+.re-nav-link {
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  font-size: 22px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.re-nav-link:hover {
+  background: rgba(148,163,184,0.25);
+  color: #e5e7eb;
+}
+
+/* Hero */
+.re-hero {
+  margin-bottom: 19px;
+}
+
+.re-hero h1 {
+  font-size: 32px;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.re-hero p {
+  font-size: 22px;
+  color: #d1d5db;
+}
+
+/* Role blocks */
+.re-role-block {
+  margin-top: 14px;
+  padding: 14px 14px 12px;
+  border-radius: 18px;
+  border: 1px solid rgba(148,163,184,0.4);
+  background: rgba(15,23,42,0.95);
+}
+
+.re-role-header h2 {
+  font-size: 28px;
+  margin-bottom: 4px;
+}
+
+.re-role-header p {
+  font-size: 23px;
+  color: #d1d5db;
+}
+
+.re-role-chip {
+  display: inline-block;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  margin-bottom: 4px;
+}
+
+.re-role-chip--head {
+  background: rgba(59,130,246,0.12);
+  border: 1px solid rgba(59,130,246,0.6);
+}
+
+.re-role-chip--tm {
+  background: rgba(16,185,129,0.12);
+  border: 1px solid rgba(16,185,129,0.6);
+}
+
+/* Role content layout */
+.re-role-content {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .re-role-content {
+    grid-template-columns: minmax(0,1fr);
+  }
+}
+
+.re-role-main {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.re-btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.re-btn {
+  font-size: 13px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  border: none;
+}
+
+.re-btn-primary {
+  background: linear-gradient(to right, #22c55e, #0ea5e9);
+  color: #ecfeff;
+}
+
+.re-btn-primary--tm {
+  background: linear-gradient(to right, #f97316, #22c55e);
+}
+
+.re-btn-outline {
+  background: transparent;
+  color: #e5e7eb;
+  border: 1px solid rgba(148,163,184,0.8);
+}
+
+.re-list {
+  padding-left: 18px;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* Right side info */
+.re-role-side {
+  border-radius: 14px;
+  padding: 10px;
+  background: rgba(15,23,42,0.9);
+  border: 1px solid rgba(55,65,81,0.9);
+  font-size: 12px;
+}
+
+.re-role-side h3 {
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.re-role-side ul {
+  padding-left: 16px;
+  color: #d1d5db;
+}
+
+.re-role-side ul li + li {
+  margin-top: 3px;
+}
+
+.re-note {
+  margin-top: 4px;
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+/* Trust section */
+.re-trust {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 10px;
+}
+
+@media (max-width: 720px) {
+  .re-trust {
+    grid-template-columns: minmax(0,1fr);
+  }
+}
+
+.re-trust-card {
+  padding: 10px 11px;
+  border-radius: 16px;
+  border: 1px solid rgba(148,163,184,0.4);
+  background: rgba(15,23,42,0.96);
+  font-size: 12px;
+}
+
+/* Footer */
+.re-footer {
+  margin-top: 16px;
+  font-size: 11px;
+  color: #9ca3af;
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+@media (max-width: 720px) {
+  .re-footer {
+    flex-direction: column;
+  }
+}

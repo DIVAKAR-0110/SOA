@@ -38,7 +38,7 @@ export default function CitizenLogin({ onBack }) {
     return () => clearInterval(id);
   }, []);
 
-  const apiBase = "http://localhost:3000";
+  const apiBase = "http://localhost:5000";
 
   const handlePasswordLogin = async (e) => {
     e.preventDefault();
@@ -49,7 +49,7 @@ export default function CitizenLogin({ onBack }) {
     }
     setLoading(true);
     try {
-      const res = await fetch(`${apiBase}/api/auth/login/password`, {
+      const res = await fetch(`${apiBase}/login/password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -77,7 +77,7 @@ export default function CitizenLogin({ onBack }) {
     }
     setLoading(true);
     try {
-      const res = await fetch(`${apiBase}/api/auth/login/request-otp`, {
+      const res = await fetch(`${apiBase}/login/request-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -111,7 +111,7 @@ export default function CitizenLogin({ onBack }) {
     }
     setLoading(true);
     try {
-      const res = await fetch(`${apiBase}/api/auth/login/verify-otp`, {
+      const res = await fetch(`${apiBase}/login/verify-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, otp: loginOtp }),
@@ -139,7 +139,7 @@ export default function CitizenLogin({ onBack }) {
     }
     setLoading(true);
     try {
-      const res = await fetch(`${apiBase}/api/auth/forgot/request-otp`, {
+      const res = await fetch(`${apiBase}/forgot/request-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -178,7 +178,7 @@ export default function CitizenLogin({ onBack }) {
     }
     setLoading(true);
     try {
-      const res = await fetch(`${apiBase}/api/auth/forgot/verify-otp`, {
+      const res = await fetch(`${apiBase}/forgot/verify-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, otp: forgotOtp, newPassword }),

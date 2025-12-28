@@ -268,3 +268,39 @@
     padding: 0.8rem 0.8rem 0.9rem;
   }
 }
+
+.react-datepicker {
+  border: none;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.react-datepicker__header {
+  background-color: #6366f1; /* indigo */
+  color: white;
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day-name {
+  color: white;
+}
+
+.react-datepicker__day--selected {
+  background-color: #22c55e !important; /* green */
+}
+
+.react-datepicker__day:hover {
+  background-color: #a5b4fc;
+}
+
+.error-text {
+  color: #dc2626;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.success-text {
+  color: #16a34a;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
