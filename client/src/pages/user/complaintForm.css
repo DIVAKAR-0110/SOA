@@ -1,0 +1,166 @@
+/* Use global tokens where possible */
+:root{ --primary: #004a99; --accent: #0284c7; --text: #0f172a; --muted:#6b7280; --card:#ffffff; --radius:10px; --shadow:0 8px 30px rgba(15,23,42,0.06) }
+
+.complaint-form-page{ min-height: calc(100vh - 40px); background: transparent; padding: 32px 24px; display: flex; flex-direction: column; align-items: center; gap: 20px; -webkit-font-smoothing:antialiased }
+
+.complaint-form{ width: 100%; max-width: var(--max-width); padding: 0 12px; margin: 0 auto; box-sizing: border-box; }
+
+.form-heading{ margin: 0 0 8px 0; font-size: 22px; color: var(--text); font-weight:700 }
+
+/* Center header and form */
+.form-header{ width: 100%; max-width: var(--max-width); margin: 0 auto 18px; padding: 0 12px; display:flex; align-items:center; justify-content:flex-start }
+
+.form-title-area{ min-width:0 }
+
+/* Ensure cards span the content width and have consistent spacing */
+.form-card{ padding: 20px; margin-bottom: 18px }
+
+.two-col{ display:grid; grid-template-columns:1fr 1fr; gap:14px }
+
+@media (max-width:900px){ .two-col{ grid-template-columns:1fr } }
+
+.form-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 18px;
+  border-left: 4px solid rgba(14,165,163,0.06);
+}
+
+.form-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  color: var(--text);
+  font-weight:700;
+  border-bottom: 1px solid rgba(15,23,42,0.04);
+  padding-bottom: 8px;
+}
+
+label {
+  display: block;
+  margin-top: 8px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+input[type="text"],
+select,
+textarea,
+input[type="file"] {
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 6px;
+  border-radius: 8px;
+  border: 1px solid #e6edf3;
+  background: #fbfdff;
+  box-sizing: border-box;
+}
+
+.field-error {
+  margin-top: 6px;
+  color: #b91c1c;
+  font-size: 13px;
+}
+
+.help {
+  color: #64748b;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.submit-btn {
+  background: linear-gradient(180deg, #0ea5a3, #0284c7);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.12);
+}
+
+.required {
+  color: #dc2626;
+  margin-left: 6px;
+}
+
+@media (min-width: 900px) {
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}
+
+/* Back button (styled like original dashboard) */
+.back-btn {
+  margin: 20px 0;
+  padding: 8px 14px;
+  background: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.back-btn:hover { background: #357abd; }
+
+/* Small top-left back button + header */
+/* header layout is defined above to use --max-width */
+
+.small-back-btn{
+  width:36px;
+  height:36px;
+  border-radius:8px;
+  border:none;
+  background:#e6f2fb;
+  color:#0f172a;
+  display:inline-grid;
+  place-items:center;
+  cursor:pointer;
+  box-shadow:0 6px 16px rgba(15,23,42,0.04);
+}
+.small-back-btn:hover{ background:#d6eaf8 }
+
+.form-title-area{ display:flex; flex-direction:column; align-items:flex-start }
+
+.category-pill{
+  margin-top:6px;
+  background:rgba(2,132,199,0.08);
+  color:var(--accent);
+  padding:6px 10px;
+  border-radius:12px;
+  font-weight:600;
+  font-size:13px;
+  border:1px solid rgba(2,132,199,0.12);
+}
+
+/* Voice input UI */
+.input-with-voice { display:flex; align-items:center; gap:8px; }
+.input-with-voice textarea { min-height:120px; }
+.voice-btn {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #e6edf3;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  min-width:48px;
+}
+.voice-btn.listening {
+  background: #fff0f0;
+  border-color: #f87171;
+  animation: pulse 1s infinite;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 rgba(248, 113, 113, 0.3); }
+  70% { box-shadow: 0 0 0 10px rgba(248, 113, 113, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0); }
+}
+.voice-feedback { margin-top: 6px; font-size: 0.9em; color: #334155; }
