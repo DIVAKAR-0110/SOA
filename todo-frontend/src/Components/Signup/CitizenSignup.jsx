@@ -708,6 +708,7 @@ export default function CitizenSignup() {
                       name="acceptTerms"
                       checked={form.acceptTerms}
                       onChange={handleChange}
+                      required
                     />
                     I agree to the Terms of Use and Citizen Charter.
                   </label>
@@ -717,6 +718,7 @@ export default function CitizenSignup() {
                       name="acceptPrivacy"
                       checked={form.acceptPrivacy}
                       onChange={handleChange}
+                      required
                     />
                     I have read the Privacy Policy and consent to processing of
                     my data for grievance redressal.

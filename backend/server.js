@@ -3,10 +3,14 @@ const mysql = require("mysql2");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 const sendOtpEmail = require("./mailer");
+const path = require("path");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static("uploads"));
+
 
 // ---------------- DB CONNECTION ----------------
 const db = mysql.createConnection({
@@ -274,3 +278,20 @@ app.post("/forgot/verify-otp", async (req, res) => {
 app.listen(5000, () => {
   console.log("Server running on port 5000");
 });
+
+
+
+//------------------Admin side modules
+const primaryAdminRoutes = require("./primaryadmin")(db);
+app.use(primaryAdminRoutes);
+
+const galleryRoutes = require("./categoryGalleryRoutes")(db);
+app.use(galleryRoutes);
+
+const jobapplication = require("./jobapplication")(db); 
+app.use(jobapplication);
+
+
+
+
+

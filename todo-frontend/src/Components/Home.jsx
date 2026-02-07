@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/home.css";
+
 import book1 from "../assets/Homepage/book1.png";
 import book2 from "../assets/Homepage/book2.png";
 import book3 from "../assets/Homepage/book3.png";
@@ -238,360 +239,365 @@ export default function Home() {
   };
 
   return (
-    <div className="ocms-page">
-      {/* NAVBAR */}
-      <header className="ocms-nav">
-        <div className="ocms-nav-inner">
-          <div className="ocms-nav-left">
-            <img
-              src="/assets/ocms-logo.png"
-              alt="OCMS Logo"
-              className="ocms-nav-logo-image"
-            />
-            <div className="ocms-nav-title-block">
-              <span className="ocms-nav-title">OCMS</span>
-              <span className="ocms-nav-subtitle">
-                Online Complaint Management System
-              </span>
+    <>
+      <div className="ocms-page">
+        {/* NAVBAR */}
+        <header className="ocms-nav">
+          <div className="ocms-nav-inner">
+            <div className="ocms-nav-left">
+              <img
+                src="/assets/ocms-logo.png"
+                alt="OCMS Logo"
+                className="ocms-nav-logo-image"
+              />
+              <div className="ocms-nav-title-block">
+                <span className="ocms-nav-title">OCMS</span>
+                <span className="ocms-nav-subtitle">
+                  Online Complaint Management System
+                </span>
+              </div>
             </div>
-          </div>
 
-          <nav
-            className={`ocms-nav-links ${
-              navOpen ? "ocms-nav-links--open" : ""
-            }`}
-          >
-            <button
-              className="ocms-nav-link"
-              onClick={closeMobileMenuOnNavigate}
-            >
-              Home
-            </button>
-            <button
-              className="ocms-nav-link"
-              onClick={() => {
-                closeMobileMenuOnNavigate();
-                navigate("/start_complaints");
-              }}
-            >
-              Complaints
-            </button>
-            <button
-              className="ocms-nav-link"
-              onClick={() => {
-                closeMobileMenuOnNavigate();
-                navigate("/about_us");
-              }}
-            >
-              About Us
-            </button>
-            <button
-              className="ocms-nav-link"
-              onClick={closeMobileMenuOnNavigate}
-            >
-              Help
-            </button>
-            <button
-              className="ocms-nav-link"
-              onClick={() => {
-                closeMobileMenuOnNavigate;
-                navigate("/contact_us");
-              }}
-            >
-              Contact Us
-            </button>
-            <button
-              className="ocms-nav-link"
-              onClick={closeMobileMenuOnNavigate}
-            >
-              Site Map
-            </button>
-          </nav>
-
-          <div className="ocms-nav-right">
-            <button
-              className="ocms-auth-btn ocms-auth-btn--login"
-              onClick={() => {
-                alert("Navigate to login page");
-                navigate("/citizen_login");
-              }}
-            >
-              Login
-            </button>
-            <button
-              className="ocms-auth-btn ocms-auth-btn--signup"
-              onClick={() => {
-                alert("Navigate to registration page");
-                navigate("/citizen_signup");
-              }}
-            >
-              New Registration
-            </button>
-
-            <button
-              className={`ocms-nav-burger ${
-                navOpen ? "ocms-nav-burger--open" : ""
+            <nav
+              className={`ocms-nav-links ${
+                navOpen ? "ocms-nav-links--open" : ""
               }`}
-              onClick={() => setNavOpen((o) => !o)}
-              aria-label="Toggle navigation"
             >
-              <span />
-              <span />
-              <span />
-            </button>
-          </div>
-        </div>
-      </header>
-      <br />
-      <br />
-
-      {/* HERO + SLIDER */}
-      <section className="ocms-hero">
-        <div className="ocms-hero-inner">
-          <div className="ocms-hero-text-block">
-            <p className="ocms-hero-kicker">Citizen Entry Portal</p>
-            <h1 className="ocms-hero-title">
-              Register and track your complaints online.
-            </h1>
-            <p className="ocms-hero-subtitle">
-              Login or create a new account to submit your electricity, water,
-              road, sanitation and public safety complaints through the OCMS
-              website.
-            </p>
-
-            <div className="ocms-hero-cta-row">
               <button
-                className="ocms-hero-btn ocms-hero-btn--primary"
+                className="ocms-nav-link"
+                onClick={closeMobileMenuOnNavigate}
+              >
+                Home
+              </button>
+              <button
+                className="ocms-nav-link"
                 onClick={() => {
-                  alert("Go to Login");
+                  closeMobileMenuOnNavigate();
+                  navigate("/start_complaints");
+                }}
+              >
+                Complaints
+              </button>
+              <button
+                className="ocms-nav-link"
+                onClick={() => {
+                  closeMobileMenuOnNavigate();
+                  navigate("/about_us");
+                }}
+              >
+                About Us
+              </button>
+              <button
+                className="ocms-nav-link"
+                onClick={closeMobileMenuOnNavigate}
+              >
+                Help
+              </button>
+              <button
+                className="ocms-nav-link"
+                onClick={() => {
+                  closeMobileMenuOnNavigate;
+                  navigate("/contact_us");
+                }}
+              >
+                Contact Us
+              </button>
+              <button
+                className="ocms-nav-link"
+                onClick={closeMobileMenuOnNavigate}
+              >
+                Site Map
+              </button>
+            </nav>
+
+            <div className="ocms-nav-right">
+              <button
+                className="ocms-auth-btn ocms-auth-btn--login"
+                onClick={() => {
+                  alert("Navigate to login page");
                   navigate("/citizen_login");
                 }}
               >
-                Login &amp; File Complaint
+                Login
               </button>
               <button
-                className="ocms-hero-btn ocms-hero-btn--secondary"
+                className="ocms-auth-btn ocms-auth-btn--signup"
                 onClick={() => {
-                  alert("Go to New Registration");
+                  alert("Navigate to registration page");
                   navigate("/citizen_signup");
                 }}
               >
-                New User Registration
+                New Registration
+              </button>
+
+              <button
+                className={`ocms-nav-burger ${
+                  navOpen ? "ocms-nav-burger--open" : ""
+                }`}
+                onClick={() => setNavOpen((o) => !o)}
+                aria-label="Toggle navigation"
+              >
+                <span />
+                <span />
+                <span />
               </button>
             </div>
-
-            <div className="ocms-hero-role-tags">
-              <span>User (Citizen)</span>
-              <span>Task Manager</span>
-              <span>Admin</span>
-            </div>
           </div>
+        </header>
+        <br />
+        <br />
 
-          <div className="ocms-hero-slider-wrapper">
-            <div
-              className={`ocms-hero-slide ocms-hero-slide--${
-                activeSlide.side === "left" ? "image-left" : "image-right"
-              } ${isFading ? "ocms-hero-slide--hidden" : ""}`}
-            >
-              <div className="ocms-hero-slide-media">
-                <img
-                  src={activeSlide.image}
-                  alt={activeSlide.title}
-                  className="ocms-hero-slide-image"
-                />
+        {/* HERO + SLIDER */}
+        <section className="ocms-hero">
+          <div className="ocms-hero-inner">
+            <div className="ocms-hero-text-block">
+              <p className="ocms-hero-kicker">Citizen Entry Portal</p>
+              <h1 className="ocms-hero-title">
+                Register and track your complaints online.
+              </h1>
+              <p className="ocms-hero-subtitle">
+                Login or create a new account to submit your electricity, water,
+                road, sanitation and public safety complaints through the OCMS
+                website.
+              </p>
+
+              <div className="ocms-hero-cta-row">
+                <button
+                  className="ocms-hero-btn ocms-hero-btn--primary"
+                  onClick={() => {
+                    alert("Go to Login");
+                    navigate("/citizen_login");
+                  }}
+                >
+                  Login &amp; File Complaint
+                </button>
+                <button
+                  className="ocms-hero-btn ocms-hero-btn--secondary"
+                  onClick={() => {
+                    alert("Go to New Registration");
+                    navigate("/citizen_signup");
+                  }}
+                >
+                  New User Registration
+                </button>
               </div>
-              <div className="ocms-hero-slide-text">
-                <h3>{activeSlide.title}</h3>
-                <p>{activeSlide.text}</p>
+
+              <div className="ocms-hero-role-tags">
+                <span>User (Citizen)</span>
+                <span>Task Manager</span>
+                <span>Admin</span>
               </div>
             </div>
 
-            <div className="ocms-hero-slider-controls">
-              <div className="ocms-hero-slider-arrows">
-                <button
-                  onClick={() => {
-                    setIsFading(true);
-                    setTimeout(() => {
-                      setSlideIndex(
-                        (prev) => (prev - 1 + SLIDES.length) % SLIDES.length
-                      );
-                      setIsFading(false);
-                    }, 200);
-                  }}
-                >
-                  ‹
-                </button>
-                <button
-                  onClick={() => {
-                    setIsFading(true);
-                    setTimeout(() => {
-                      setSlideIndex((prev) => (prev + 1) % SLIDES.length);
-                      setIsFading(false);
-                    }, 200);
-                  }}
-                >
-                  ›
-                </button>
+            <div className="ocms-hero-slider-wrapper">
+              <div
+                className={`ocms-hero-slide ocms-hero-slide--${
+                  activeSlide.side === "left" ? "image-left" : "image-right"
+                } ${isFading ? "ocms-hero-slide--hidden" : ""}`}
+              >
+                <div className="ocms-hero-slide-media">
+                  <img
+                    src={activeSlide.image}
+                    alt={activeSlide.title}
+                    className="ocms-hero-slide-image"
+                  />
+                </div>
+                <div className="ocms-hero-slide-text">
+                  <h3>{activeSlide.title}</h3>
+                  <p>{activeSlide.text}</p>
+                </div>
               </div>
-              <div className="ocms-hero-slider-dots">
-                {SLIDES.map((s, i) => (
+
+              <div className="ocms-hero-slider-controls">
+                <div className="ocms-hero-slider-arrows">
                   <button
-                    key={s.id}
-                    className={`ocms-hero-slider-dot ${
-                      i === slideIndex ? "ocms-hero-slider-dot--active" : ""
-                    }`}
                     onClick={() => {
                       setIsFading(true);
                       setTimeout(() => {
-                        setSlideIndex(i);
+                        setSlideIndex(
+                          (prev) => (prev - 1 + SLIDES.length) % SLIDES.length,
+                        );
                         setIsFading(false);
                       }, 200);
                     }}
-                  />
-                ))}
+                  >
+                    ‹
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsFading(true);
+                      setTimeout(() => {
+                        setSlideIndex((prev) => (prev + 1) % SLIDES.length);
+                        setIsFading(false);
+                      }, 200);
+                    }}
+                  >
+                    ›
+                  </button>
+                </div>
+                <div className="ocms-hero-slider-dots">
+                  {SLIDES.map((s, i) => (
+                    <button
+                      key={s.id}
+                      className={`ocms-hero-slider-dot ${
+                        i === slideIndex ? "ocms-hero-slider-dot--active" : ""
+                      }`}
+                      onClick={() => {
+                        setIsFading(true);
+                        setTimeout(() => {
+                          setSlideIndex(i);
+                          setIsFading(false);
+                        }, 200);
+                      }}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* BIG BOOK SECTION */}
-      <section className="ocms-bigbook-section">
-        <div className="ocms-bigbook-inner">
-          <header className="ocms-bigbook-header">
-            <h2>Complaint Domain Reading Room</h2>
-            <p>
-              Choose a complaint domain, open the book and flip through the
-              pages to understand real issues and what to mention when you file
-              your complaint.
-            </p>
-          </header>
+        {/* BIG BOOK SECTION */}
+        <section className="ocms-bigbook-section">
+          <div className="ocms-bigbook-inner">
+            <header className="ocms-bigbook-header">
+              <h2>Complaint Domain Reading Room</h2>
+              <p>
+                Choose a complaint domain, open the book and flip through the
+                pages to understand real issues and what to mention when you
+                file your complaint.
+              </p>
+            </header>
 
-          <div className="ocms-bigbook-tabs">
-            {BOOKS.map((book) => (
-              <button
-                key={book.id}
-                className={`ocms-bigbook-tab ${
-                  activeBookId === book.id ? "ocms-bigbook-tab--active" : ""
-                }`}
-                onClick={() => handleSelectBook(book.id)}
-              >
-                {book.title}
-              </button>
-            ))}
-          </div>
-
-          <div className="ocms-bigbook-layout">
-            <div className="ocms-bigbook-illustration">
-              {currentBook ? (
-                <img
-                  src={currentBook.image}
-                  alt={currentBook.title}
-                  className="ocms-bigbook-illustration-img"
-                />
-              ) : (
-                <div className="ocms-bigbook-illustration-placeholder">
-                  <span>Select a book to begin reading</span>
-                </div>
-              )}
+            <div className="ocms-bigbook-tabs">
+              {BOOKS.map((book) => (
+                <button
+                  key={book.id}
+                  className={`ocms-bigbook-tab ${
+                    activeBookId === book.id ? "ocms-bigbook-tab--active" : ""
+                  }`}
+                  onClick={() => handleSelectBook(book.id)}
+                >
+                  {book.title}
+                </button>
+              ))}
             </div>
 
-            <div className="ocms-bigbook-container">
-              {!currentBook && (
-                <div className="ocms-bigbook-closed">
-                  <div className="ocms-bigbook-closed-cover">
-                    <span>Complaint Guide Book</span>
-                    <p>Pick a domain from above to open the book.</p>
+            <div className="ocms-bigbook-layout">
+              <div className="ocms-bigbook-illustration">
+                {currentBook ? (
+                  <img
+                    src={currentBook.image}
+                    alt={currentBook.title}
+                    className="ocms-bigbook-illustration-img"
+                  />
+                ) : (
+                  <div className="ocms-bigbook-illustration-placeholder">
+                    <span>Select a book to begin reading</span>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
 
-              {currentBook && currentSpread && (
-                <div
-                  className={`ocms-bigbook-3d ${
-                    turnDirection === "right"
-                      ? "ocms-bigbook-3d--turn-right"
-                      : ""
-                  } ${
-                    turnDirection === "left" ? "ocms-bigbook-3d--turn-left" : ""
-                  }`}
-                >
-                  <div className="ocms-bigbook-pages">
-                    <div className="ocms-bigbook-page ocms-bigbook-page--left">
-                      <h3>{currentSpread.left}</h3>
-                      <p>{currentSpread.right}</p>
+              <div className="ocms-bigbook-container">
+                {!currentBook && (
+                  <div className="ocms-bigbook-closed">
+                    <div className="ocms-bigbook-closed-cover">
+                      <span>Complaint Guide Book</span>
+                      <p>Pick a domain from above to open the book.</p>
                     </div>
-                    <div className="ocms-bigbook-page ocms-bigbook-page--right">
-                      <div className="ocms-bigbook-page-content">
-                        <p className="ocms-bigbook-page-label">
-                          Page {pageIndex + 1} of {totalPages}
-                        </p>
-                        <div className="ocms-bigbook-page-controls">
+                  </div>
+                )}
+
+                {currentBook && currentSpread && (
+                  <div
+                    className={`ocms-bigbook-3d ${
+                      turnDirection === "right"
+                        ? "ocms-bigbook-3d--turn-right"
+                        : ""
+                    } ${
+                      turnDirection === "left"
+                        ? "ocms-bigbook-3d--turn-left"
+                        : ""
+                    }`}
+                  >
+                    <div className="ocms-bigbook-pages">
+                      <div className="ocms-bigbook-page ocms-bigbook-page--left">
+                        <h3>{currentSpread.left}</h3>
+                        <p>{currentSpread.right}</p>
+                      </div>
+                      <div className="ocms-bigbook-page ocms-bigbook-page--right">
+                        <div className="ocms-bigbook-page-content">
+                          <p className="ocms-bigbook-page-label">
+                            Page {pageIndex + 1} of {totalPages}
+                          </p>
+                          <div className="ocms-bigbook-page-controls">
+                            <button
+                              disabled={pageIndex === 0}
+                              onClick={() => turnPage("left")}
+                            >
+                              ← Previous
+                            </button>
+                            <button
+                              disabled={pageIndex === totalPages - 1}
+                              onClick={() => turnPage("right")}
+                            >
+                              Next →
+                            </button>
+                          </div>
                           <button
-                            disabled={pageIndex === 0}
-                            onClick={() => turnPage("left")}
+                            className="ocms-bigbook-complain-btn"
+                            onClick={() =>
+                              alert(
+                                `Start complaint registration for: ${currentBook.title}`,
+                              )
+                            }
                           >
-                            ← Previous
-                          </button>
-                          <button
-                            disabled={pageIndex === totalPages - 1}
-                            onClick={() => turnPage("right")}
-                          >
-                            Next →
+                            File {currentBook.title} Complaint
                           </button>
                         </div>
-                        <button
-                          className="ocms-bigbook-complain-btn"
-                          onClick={() =>
-                            alert(
-                              `Start complaint registration for: ${currentBook.title}`
-                            )
-                          }
-                        >
-                          File {currentBook.title} Complaint
-                        </button>
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* FOOTER */}
-      <footer className="ocms-footer">
-        <div className="ocms-footer-top-border" />
-        <div className="ocms-footer-inner">
-          <div className="ocms-footer-col">
-            <h4>Online Complaint Management System (OCMS)</h4>
-            <p>
-              A premium ERP‑style platform to register, route and resolve
-              citizen complaints across multiple departments and organizations.
-            </p>
+        {/* FOOTER */}
+        <footer className="ocms-footer">
+          <div className="ocms-footer-top-border" />
+          <div className="ocms-footer-inner">
+            <div className="ocms-footer-col">
+              <h4>Online Complaint Management System (OCMS)</h4>
+              <p>
+                A premium ERP‑style platform to register, route and resolve
+                citizen complaints across multiple departments and
+                organizations.
+              </p>
+            </div>
+            <div className="ocms-footer-col">
+              <h5>Quick Links</h5>
+              <ul>
+                <li>Home</li>
+                <li>Complaints</li>
+                <li>About Us</li>
+                <li>Help</li>
+                <li>Site Map</li>
+              </ul>
+            </div>
+            <div className="ocms-footer-col">
+              <h5>Contact</h5>
+              <p>Email: support@ocms.in</p>
+              <p>Phone: +91‑00000‑00000</p>
+              <p>Address: New Delhi, India</p>
+            </div>
           </div>
-          <div className="ocms-footer-col">
-            <h5>Quick Links</h5>
-            <ul>
-              <li>Home</li>
-              <li>Complaints</li>
-              <li>About Us</li>
-              <li>Help</li>
-              <li>Site Map</li>
-            </ul>
+          <div className="ocms-footer-bottom">
+            © 2025 Online Complaint Management – All Rights Reserved.
           </div>
-          <div className="ocms-footer-col">
-            <h5>Contact</h5>
-            <p>Email: support@ocms.in</p>
-            <p>Phone: +91‑00000‑00000</p>
-            <p>Address: New Delhi, India</p>
-          </div>
-        </div>
-        <div className="ocms-footer-bottom">
-          © 2025 Online Complaint Management – All Rights Reserved.
-        </div>
-      </footer>
-    </div>
+        </footer>
+      </div>
+    </>
   );
 }

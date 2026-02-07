@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import React from "react";
 import "./CitizenLogin.css";
 import login from "../../assets/Homepage/login.gif";
+import { useNavigate } from "react-router-dom";
 
 const slides = [
   {
@@ -29,11 +30,12 @@ export default function CitizenLogin({ onBack }) {
   const [newPassword, setNewPassword] = useState("");
   const [status, setStatus] = useState({ type: "", text: "" });
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const id = setInterval(
       () => setSlideIndex((i) => (i + 1) % slides.length),
-      5000
+      5000,
     );
     return () => clearInterval(id);
   }, []);
@@ -59,7 +61,7 @@ export default function CitizenLogin({ onBack }) {
         setStatus({ type: "error", text: data.message || "Login failed." });
       } else {
         setStatus({ type: "success", text: "Login successful." });
-        // TODO: store token in localStorage and redirect
+        navigate("/citizen_dashboard");
       }
     } catch {
       setStatus({ type: "error", text: "Network error while logging in." });
@@ -412,8 +414,8 @@ export default function CitizenLogin({ onBack }) {
                   {loading
                     ? "Processing..."
                     : loginOtp
-                    ? "Verify OTP & Sign in"
-                    : "Send OTP to email"}
+                      ? "Verify OTP & Sign in"
+                      : "Send OTP to email"}
                 </button>
               </form>
             )}

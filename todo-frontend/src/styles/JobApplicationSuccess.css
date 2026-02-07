@@ -1,0 +1,127 @@
+.job-success-container {
+  max-width: 600px;
+  margin: 80px auto;
+  padding: 40px 30px;
+  background: #ffffff;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+  overflow: visible;
+}
+
+/* Checkmark animation container */
+.checkmark-circle {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 20px auto;
+  border-radius: 50%;
+  background-color: #4caf50;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  box-shadow: 0 0 15px #4caf50;
+}
+
+.checkmark-circle.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* SVG styles */
+.checkmark {
+  display: block;
+  stroke: white;
+  stroke-width: 4;
+  stroke-miterlimit: 10;
+  margin: 12px auto 0 auto;
+  width: 48px;
+  height: 48px;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: draw-check 0.6s ease forwards 0.4s;
+}
+
+.checkmark-circle-bg {
+  stroke: none;
+}
+
+.checkmark-check {
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: draw-check 0.6s ease forwards 0.4s;
+}
+
+/* Animate the checkmark stroke */
+@keyframes draw-check {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.job-success-container h2 {
+  color: #2e7d32;
+  font-size: 26px;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.job-success-container p {
+  font-size: 16px;
+  color: #444;
+  line-height: 1.6;
+  margin-bottom: 12px;
+  max-width: 460px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.btn-link {
+  text-decoration: none;
+}
+
+.btn-primary {
+  margin-top: 25px;
+  padding: 14px 30px;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  background-color: #1976d2;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.15s ease;
+  box-shadow: 0 5px 15px rgba(25, 118, 210, 0.3);
+}
+
+.btn-primary:hover {
+  background-color: #125aa3;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(18, 90, 163, 0.5);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 10px rgba(18, 90, 163, 0.4);
+}
+
+@media (max-width: 600px) {
+  .job-success-container {
+    margin: 40px 16px;
+    padding: 30px 20px;
+  }
+
+  .job-success-container h2 {
+    font-size: 22px;
+  }
+
+  .job-success-container p {
+    font-size: 15px;
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 14px 0;
+  }
+}

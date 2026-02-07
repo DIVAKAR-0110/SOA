@@ -3,14 +3,21 @@ const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "ungaarusuvai1709@gmail.com",        
-    pass: "xmzm xalv yois hqts",          
+    user: process.env.SMTP_USER || "akshuraj2k6@gmail.com",
+    pass: process.env.SMTP_PASS || "qpin enrp rozy uvih",
   },
+});
+
+// Verify transporter on startup so we can log obvious config errors
+transporter.verify().then(() => {
+  console.log("Mailer: SMTP transporter is ready");
+}).catch((err) => {
+  console.error("Mailer: transporter verify failed:", err.message || err);
 });
 
 const sendOtpEmail = async (toEmail, otp) => {
   const mailOptions = {
-    from: `"OCMS Support" <ungaarusuvai1709@gmail.com>`,
+    from: `"OCMS Support" <${process.env.SMTP_USER || "akshuraj2k6@gmail.com"}>`,
     to: toEmail,
     subject: "OCMS Email Verification OTP",
     html: `
@@ -26,7 +33,14 @@ const sendOtpEmail = async (toEmail, otp) => {
     `,
   };
 
-  await transporter.sendMail(mailOptions);
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`Mailer: sent OTP to ${toEmail}, id=${info.messageId}`);
+    return info;
+  } catch (err) {
+    console.error("Mailer: sendMail failed:", err);
+    throw err;
+  }
 };
 
 module.exports = sendOtpEmail;
