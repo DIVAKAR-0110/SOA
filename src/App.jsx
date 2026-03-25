@@ -18,6 +18,10 @@ import ComplaintForm from './user/ComplaintForm';
 import MyComplaints from './user/MyComplaints';
 import ViewStatus from './user/ViewStatus';
 
+// Staff / Official components
+import StaffSignup from './components/StaffSignup/StaffSignup.jsx';
+import StaffLogin from './components/StaffLogin/StaffLogin.jsx';
+import ApprovalDashboard from './staff/ApprovalDashboard.jsx';
 
 
 function ProtectedRoute({ children }) {
@@ -39,7 +43,7 @@ export default function App() {
   }, []);
 
   if (showSplash) return <SplashScreen />;
-  
+
   // Wait for auth context to load before routing
   if (loading) {
     return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>Loading...</div>;
@@ -51,15 +55,30 @@ export default function App() {
         <Routes>
 
           {/* root - show dashboard if logged in, otherwise public home */}
-          <Route path="/user/profile" element={<Profile />} />
+
+
 
 
           {/* public pages */}
           <Route path="/" element={<Home />} />
-          <Route path="/citizen_signup" element={<CitizenSignup />} />
-          <Route path="/citizen_login" element={<CitizenLogin />} />
-          <Route path="/about_us" element={<AboutUs />} />
-          <Route path="/contact_us" element={<ContactUs />} />
+          <Route path="/signup" element={<CitizenSignup />} />
+          <Route path="/login" element={<CitizenLogin />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/contact" element={<ContactUs />} />
+          {/* Protected profile */}
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ----- Staff / Official Routes ----- */}
+          <Route path="/staff_signup" element={<StaffSignup />} />
+          <Route path="/staff_login" element={<StaffLogin />} />
+          <Route path="/staff/dashboard" element={<ApprovalDashboard />} />
 
           {/* Protected user dashboard and related pages - keep dashboard wrapper */}
           <Route
@@ -70,24 +89,19 @@ export default function App() {
               </ProtectedRoute>
             }
           >
-            <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }
-          />
             <Route path="dashboard" element={<UserDashboard />} />
             <Route path="categories" element={<CategoryPage />} />
             <Route path="complaint/new" element={<ComplaintForm />} />
             <Route path="complaints" element={<MyComplaints />} />
             <Route path="status" element={<ViewStatus />} />
+
           </Route>
-          
-         
+
+
           {/* fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
+
+
         </Routes>
       </div>
     </BrowserRouter>

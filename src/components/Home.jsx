@@ -334,12 +334,19 @@ export default function Home() {
     </>
   ) : (
     <>
-      <button
-        className="ocms-nav-link"
-        onClick={() => navigate("/profile")}
-      >
-        Profile
-      </button>
+    <button
+      className="ocms-nav-link"
+      onClick={() => {
+        if (!user) {
+          alert("Please login or register to view your profile.");
+          navigate("/citizen_login");
+        } else {
+          navigate("/profile");
+        }
+      }}
+    >
+      Profile
+    </button>
 
       <button
         className="ocms-auth-btn ocms-auth-btn--logout"
@@ -395,11 +402,27 @@ export default function Home() {
               <button
                 className="ocms-hero-btn ocms-hero-btn--secondary"
                 onClick={() => {
-                  alert("Go to New Registration");
                   navigate("/citizen_signup");
                 }}
               >
                 New User Registration
+              </button>
+            </div>
+            
+            <div className="ocms-hero-cta-row" style={{ marginTop: '12px', gap: '8px' }}>
+              <button
+                className="ocms-hero-btn ocms-hero-btn--secondary"
+                style={{ fontSize: '12px', padding: '8px 16px', background: 'transparent', color: '#fff' }}
+                onClick={() => navigate("/staff_login")}
+              >
+                Official / Staff Login
+              </button>
+              <button
+                className="ocms-hero-btn ocms-hero-btn--secondary"
+                style={{ fontSize: '12px', padding: '8px 16px', background: 'transparent', color: '#fff' }}
+                onClick={() => navigate("/staff_signup")}
+              >
+                Official Registration
               </button>
             </div>
 

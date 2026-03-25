@@ -1,9 +1,14 @@
+const path = require('path');
+const envPath = path.resolve(__dirname, '../.env');
+require('dotenv').config({ path: envPath });
+console.log(`[Env Debug] Loading .env from: ${envPath}`);
 const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const sendOtpEmail = require("./mailer");
+const { sendSms, verifyAndSendSms } = require("./smsService");
 
 const app = express();
 const fs = require('fs');
@@ -57,8 +62,8 @@ function verifyToken(req, res, next) {
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "my_root_aksh_04",
-  database: "complaint_db",
+  password: "R_diva_0110_",
+  database: "complaintt_system",
 });
 
 db.connect((err) => {
@@ -67,6 +72,82 @@ db.connect((err) => {
     process.exit(1);
   }
   console.log("MySQL connected");
+
+  // Ensure login_otps table exists and has correct schema
+  const createLoginOtps = `
+    CREATE TABLE IF NOT EXISTS login_otps (
+      email VARCHAR(255) NOT NULL,
+      otp VARCHAR(10) NOT NULL,
+      purpose VARCHAR(50) NOT NULL,
+      expires_at DATETIME NOT NULL,
+      PRIMARY KEY (email, purpose)
+    )
+  `;
+  db.query(createLoginOtps, (err) => {
+    if (err) {
+      console.error("Error creating login_otps table:", err);
+    } else {
+      console.log("✅ login_otps table checked/created");
+      // Force update the purpose column if it's an ENUM
+      db.query("ALTER TABLE login_otps MODIFY COLUMN purpose VARCHAR(50) NOT NULL", (alterErr) => {
+         if (alterErr) console.warn("Note: Could not alter login_otps table (it might be fine):", alterErr.message);
+         else console.log("✅ login_otps schema updated");
+      });
+    }
+  });
+});
+
+// ---------------- MOBILE OTP (PRE-SIGNUP) ----------------
+app.post("/api/request-mobile-otp", async (req, res) => {
+  const { mobile } = req.body;
+  if (!mobile) return res.status(400).json({ message: "Mobile number required" });
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+
+  try {
+    // Attempt to verify number on friend's API
+    await verifyAndSendSms(mobile, `Your OCMS Mobile Verification OTP is: ${otp}`);
+
+    db.query(
+      `REPLACE INTO login_otps (email, otp, purpose, expires_at) VALUES (?, ?, 'mobile_verify', ?)`,
+      [mobile, otp, expiresAt],
+      (err) => {
+        if (err) {
+          console.error("DB Error:", err);
+          return res.status(500).json({ message: "Failed to store mobile OTP" });
+        }
+        res.json({ message: "OTP sent to your mobile" });
+      }
+    );
+  } catch (err) {
+    if (err.response && err.response.data) {
+      console.warn("[SMS] API Error details:", err.response.data);
+      if (err.response.data.message) {
+         return res.status(400).json({ message: err.response.data.message });
+      }
+      return res.status(400).json({ message: "Number not registered in verification simulator." });
+    }
+    console.error("SMS Request Error [STACK]:", err);
+    res.status(500).json({ message: "Failed to contact SMS verification simulator. Ensure the Simulator API URL is correct in .env" });
+  }
+});
+
+app.post("/api/verify-mobile-otp", (req, res) => {
+  const { mobile, otp } = req.body;
+  if (!mobile || !otp) return res.status(400).json({ message: "Mobile and OTP required" });
+
+  db.query(
+    `SELECT * FROM login_otps WHERE email=? AND otp=? AND purpose='mobile_verify' AND expires_at > NOW()`,
+    [mobile, otp],
+    (err, rows) => {
+      if (err || rows.length === 0) {
+        return res.status(400).json({ message: "Invalid or expired OTP" });
+      }
+      db.query("DELETE FROM login_otps WHERE email=? AND purpose='mobile_verify'", [mobile]);
+      res.json({ message: "Mobile verified successfully" });
+    }
+  );
 });
 
 // ---------------- GENERATE OTP ----------------
@@ -96,7 +177,8 @@ app.post("/get_otp", async (req, res) => {
 
         try {
           await sendOtpEmail(form.email, otp);
-          res.json({ message: "OTP sent to email successfully" });
+          if (form.mobile) await sendSms(form.mobile, `Your OCMS Account verification OTP is: ${otp}`);
+          res.json({ message: "OTP sent to email and SMS successfully" });
         } catch (mailErr) {
           console.error("Mail Error:", mailErr);
           res.status(500).json({ message: "OTP email failed" });
@@ -180,7 +262,12 @@ app.post("/verify_otp", async (req, res) => {
           }
 
           db.query("DELETE FROM citizen_otps WHERE email=?", [email]);
-          
+
+          // Send success text via Simulator
+          if (form.mobile) {
+            sendSms(form.mobile, "Your OCMS registration was successful. You can now login using your email and password.");
+          }
+
           // Generate token for new user
           const token = jwt.sign(
             { id: result.insertId, email: form.email },
@@ -248,7 +335,7 @@ app.post("/login/request-otp", (req, res) => {
   const { email } = req.body;
 
   db.query(
-    "SELECT id FROM citizensignup WHERE email=?",
+    "SELECT id, mobile FROM citizensignup WHERE email=?",
     [email],
     async (err, rows) => {
       if (rows.length === 0) {
@@ -266,7 +353,8 @@ app.post("/login/request-otp", (req, res) => {
           if (err) return res.status(500).json({ message: "OTP failed" });
 
           await sendOtpEmail(email, otp);
-          res.json({ message: "OTP sent for login" });
+          if (rows[0].mobile) await sendSms(rows[0].mobile, `Your OCMS Login OTP is: ${otp}`);
+          res.json({ message: "OTP sent for login via email and SMS" });
         }
       );
     }
@@ -291,7 +379,7 @@ app.post("/login/verify-otp", (req, res) => {
         [email],
         (userErr, userRows) => {
           db.query("DELETE FROM login_otps WHERE email=?", [email]);
-          
+
           if (userErr || userRows.length === 0) {
             return res.status(400).json({ message: "User not found" });
           }
@@ -324,7 +412,7 @@ app.post("/forgot/request-otp", (req, res) => {
   const { email } = req.body;
 
   db.query(
-    "SELECT id FROM citizensignup WHERE email=?",
+    "SELECT id, mobile FROM citizensignup WHERE email=?",
     [email],
     async (err, rows) => {
       if (rows.length === 0) {
@@ -340,7 +428,8 @@ app.post("/forgot/request-otp", (req, res) => {
         [email, otp, expiresAt],
         async () => {
           await sendOtpEmail(email, otp);
-          res.json({ message: "Password reset OTP sent" });
+          if (rows[0].mobile) await sendSms(rows[0].mobile, `Your OCMS Password Reset OTP is: ${otp}`);
+          res.json({ message: "Password reset OTP sent via email and SMS" });
         }
       );
     }
@@ -539,6 +628,12 @@ app.post("/api/complaints", verifyToken, upload.single('proof'), (req, res) => {
   );
 });
 
+
+// ============================================
+// ====== STAFF REGISTRATION ROUTES ==========
+// ============================================
+const staffRegistrationRoutes = require("./routes/staffRegistration");
+app.use("/api/staff-register", staffRegistrationRoutes);
 
 // ============================================
 // =========== SERVER START ==================

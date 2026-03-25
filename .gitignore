@@ -11,6 +11,18 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
+BACKEND_UPDATES.md
+DATABASE_SETUP.md
+DOCUMENTATION_INDEX.md
+FINAL_STATUS.md
+INTEGRATION_SUMMARY.md
+MYSQL_SCHEMA.md
+QUICK_REFERENCE.md
+START_HERE.md
+TABLES_MAPPING.md
+README_BACKEND.md
+SCHEMA_INTEGRATION.md
 
 # Editor directories and files
 .vscode/*

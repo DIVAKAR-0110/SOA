@@ -36,9 +36,9 @@ const initialForm = {
 
 export default function CitizenSignup() {
   const [form, setForm] = useState(initialForm);
-  const [otp, setOtp] = useState("");
+  const [mobileOtp, setMobileOtp] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(null);
-  const [step, setStep] = useState("form");
+  const [step, setStep] = useState("phone_input");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -70,6 +70,65 @@ export default function CitizenSignup() {
     });
   };
 
+  const handleRequestMobileOtp = async (e) => {
+    e.preventDefault();
+    setMessage("");
+    if (!form.mobile || form.mobile.length !== 10) {
+      setMessage("Please enter a valid 10-digit mobile number.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:5000/api/request-mobile-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mobile: form.mobile }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setMessage(data.message || "Failed to send Mobile OTP.");
+      } else {
+        setMessage("Verification OTP sent to your mobile.");
+        setStep("phone_otp");
+      }
+    } catch (err) {
+      setMessage("Network error while sending mobile OTP.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyMobileOtp = async (e) => {
+    e.preventDefault();
+    setMessage("");
+    if (!mobileOtp) {
+      setMessage("Enter the OTP you received on your phone.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:5000/api/verify-mobile-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mobile: form.mobile, otp: mobileOtp }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setMessage(data.message || "Invalid or expired Mobile OTP.");
+      } else {
+        setMessage("Mobile number verified successfully! Now please fill your details.");
+        setStep("form");
+      }
+    } catch (err) {
+      setMessage("Network error while verifying Mobile OTP.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const [emailOtp, setEmailOtp] = useState("");
+
   const handleRequestOtp = async (e) => {
     e.preventDefault();
     setMessage("");
@@ -92,10 +151,10 @@ export default function CitizenSignup() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setMessage(data.message || "Failed to send OTP.");
+        setMessage(data.message || "Failed to send email OTP.");
       } else {
         setMessage("OTP sent to your email. Please check your inbox.");
-        setStep("otp");
+        setStep("email_otp");
       }
     } catch (err) {
       setMessage("Network error while sending OTP.");
@@ -107,8 +166,8 @@ export default function CitizenSignup() {
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
     setMessage("");
-    if (!otp) {
-      setMessage("Enter the OTP you received.");
+    if (!emailOtp) {
+      setMessage("Enter the OTP you received in your email.");
       return;
     }
     setLoading(true);
@@ -116,11 +175,11 @@ export default function CitizenSignup() {
       const res = await fetch("http://localhost:5000/verify_otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: form.email, otp }),
+        body: JSON.stringify({ email: form.email, otp: emailOtp }),
       });
       const data = await res.json();
       if (!res.ok) {
-        setMessage(data.message || "Invalid or expired OTP.");
+        setMessage(data.message || "Invalid or expired email OTP.");
       } else {
         setMessage("Registration successful.");
         // Auto-login after successful signup
@@ -379,6 +438,76 @@ export default function CitizenSignup() {
 
           {message && <div className="signup-message">{message}</div>}
 
+          {/* Step 0: Mobile Number Input */}
+          {step === "phone_input" && (
+            <form className="signup-otp-form" onSubmit={handleRequestMobileOtp}>
+              <h2>Mobile verification</h2>
+              <p>
+                Enter your mobile number to begin. We'll check if your number is 
+                registered on our network and send you a verification code.
+              </p>
+              <div className="field">
+                <label>Mobile number (+91)</label>
+                <input
+                  type="tel"
+                  name="mobile"
+                  value={form.mobile}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, "");
+                    if (value.length <= 10)
+                      handleChange({ target: { name: "mobile", value } });
+                  }}
+                  placeholder="10-digit mobile number"
+                  required
+                />
+              </div>
+              <button
+                className="signup-submit"
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? "Verifying..." : "Verify & Continue"}
+              </button>
+            </form>
+          )}
+
+          {/* Step 0.5: Mobile OTP */}
+          {step === "phone_otp" && (
+            <form className="signup-otp-form" onSubmit={handleVerifyMobileOtp}>
+              <h2>Enter mobile OTP</h2>
+              <p>
+                A verification code has been sent to <strong>+91 {form.mobile}</strong> via our SMS simulator.
+              </p>
+              <div className="field">
+                <label>Verification Code</label>
+                <input
+                  value={mobileOtp}
+                  onChange={(e) => setMobileOtp(e.target.value.replace(/\D/g, ""))}
+                  maxLength={6}
+                  placeholder="6-digit OTP"
+                  required
+                />
+              </div>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button
+                  className="signup-submit"
+                  type="submit"
+                  disabled={loading}
+                >
+                  {loading ? "Checking..." : "Verify OTP"}
+                </button>
+                <button
+                  type="button"
+                  className="signup-submit"
+                  style={{ backgroundColor: '#6c757d' }}
+                  onClick={() => setStep("phone_input")}
+                >
+                  Change Number
+                </button>
+              </div>
+            </form>
+          )}
+
           {/* Step 1: Registration Form */}
           {step === "form" && (
             <form className="signup-form" onSubmit={handleRequestOtp}>
@@ -439,17 +568,13 @@ export default function CitizenSignup() {
                     </select>
                   </div>
                   <div className="field">
-                    <label>Mobile number * (+91)</label>
+                    <label>Mobile number (Verified)</label>
                     <input
                       type="tel"
                       name="mobile"
                       value={form.mobile}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/\D/g, "");
-                        if (value.length <= 10)
-                          handleChange({ target: { name: "mobile", value } });
-                      }}
-                      required
+                      disabled
+                      style={{ backgroundColor: '#f0f0f0', cursor: 'not-allowed' }}
                     />
                   </div>
                   <div className="field">
@@ -748,8 +873,8 @@ export default function CitizenSignup() {
             </form>
           )}
 
-          {/* Step 2: OTP Verification */}
-          {step === "otp" && (
+          {/* Step 2: Email OTP Verification */}
+          {step === "email_otp" && (
             <form className="signup-otp-form" onSubmit={handleVerifyOtp}>
               <h2>Email verification</h2>
               <p>
@@ -759,8 +884,8 @@ export default function CitizenSignup() {
               <div className="field">
                 <label>OTP</label>
                 <input
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+                  value={emailOtp}
+                  onChange={(e) => setEmailOtp(e.target.value.replace(/\D/g, ""))}
                   maxLength={6}
                   required
                 />
