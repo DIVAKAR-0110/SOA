@@ -1,6 +1,6 @@
 // src/App.jsx
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import UserLayout from './user/UserLayout';
 import Profile from "./components/profile/Profile.jsx";
@@ -50,7 +50,7 @@ export default function App() {
   }
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div className="page-root">
         <Routes>
 
@@ -104,6 +104,6 @@ export default function App() {
 
         </Routes>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
