@@ -259,9 +259,8 @@ export default function Home() {
           </div>
 
           <nav
-            className={`ocms-nav-links ${
-              navOpen ? "ocms-nav-links--open" : ""
-            }`}
+            className={`ocms-nav-links ${navOpen ? "ocms-nav-links--open" : ""
+              }`}
           >
             <button
               className="ocms-nav-link"
@@ -316,60 +315,60 @@ export default function Home() {
           </nav>
 
           <div className="ocms-nav-right">
-  {!user ? (
-    <>
-      <button
-        className="ocms-auth-btn ocms-auth-btn--login"
-        onClick={() => navigate("/citizen_login")}
-      >
-        Login
-      </button>
+            {!user ? (
+              <>
+                <button
+                  className="ocms-auth-btn ocms-auth-btn--login"
+                  onClick={() => navigate("/citizen_login")}
+                >
+                  Login
+                </button>
 
-      <button
-        className="ocms-auth-btn ocms-auth-btn--signup"
-        onClick={() => navigate("/citizen_signup")}
-      >
-        New Registration
-      </button>
-    </>
-  ) : (
-    <>
-    <button
-      className="ocms-nav-link"
-      onClick={() => {
-        if (!user) {
-          alert("Please login or register to view your profile.");
-          navigate("/citizen_login");
-        } else {
-          navigate("/profile");
-        }
-      }}
-    >
-      Profile
-    </button>
+                <button
+                  className="ocms-auth-btn ocms-auth-btn--signup"
+                  onClick={() => navigate("/citizen_signup")}
+                >
+                  New Registration
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  className="ocms-nav-link"
+                  onClick={() => {
+                    if (!user) {
+                      alert("Please login or register to view your profile.");
+                      navigate("/citizen_login");
+                    } else {
+                      navigate("/profile");
+                    }
+                  }}
+                >
+                  Profile
+                </button>
 
-      <button
-        className="ocms-auth-btn ocms-auth-btn--logout"
-        onClick={() => {
-          localStorage.clear();
-          navigate("/");
-        }}
-      >
-        Logout
-      </button>
-    </>
-  )}
+                <button
+                  className="ocms-auth-btn ocms-auth-btn--logout"
+                  onClick={() => {
+                    localStorage.clear();
+                    navigate("/");
+                  }}
+                >
+                  Logout
+                </button>
+              </>
+            )}
 
-  <button
-    className={`ocms-nav-burger ${navOpen ? "ocms-nav-burger--open" : ""}`}
-    onClick={() => setNavOpen(o => !o)}
-    aria-label="Toggle navigation"
-  >
-    <span />
-    <span />
-    <span />
-  </button>
-</div>
+            <button
+              className={`ocms-nav-burger ${navOpen ? "ocms-nav-burger--open" : ""}`}
+              onClick={() => setNavOpen(o => !o)}
+              aria-label="Toggle navigation"
+            >
+              <span />
+              <span />
+              <span />
+            </button>
+          </div>
         </div>
       </header>
       <br />
@@ -394,7 +393,7 @@ export default function Home() {
                 className="ocms-hero-btn ocms-hero-btn--primary"
                 onClick={() => {
                   alert("Go to Login");
-                  navigate("/citizen_login");
+                  navigate("/login");
                 }}
               >
                 Login &amp; File Complaint
@@ -402,13 +401,13 @@ export default function Home() {
               <button
                 className="ocms-hero-btn ocms-hero-btn--secondary"
                 onClick={() => {
-                  navigate("/citizen_signup");
+                  navigate("/signup");
                 }}
               >
                 New User Registration
               </button>
             </div>
-            
+
             <div className="ocms-hero-cta-row" style={{ marginTop: '12px', gap: '8px' }}>
               <button
                 className="ocms-hero-btn ocms-hero-btn--secondary"
@@ -435,9 +434,8 @@ export default function Home() {
 
           <div className="ocms-hero-slider-wrapper">
             <div
-              className={`ocms-hero-slide ocms-hero-slide--${
-                activeSlide.side === "left" ? "image-left" : "image-right"
-              } ${isFading ? "ocms-hero-slide--hidden" : ""}`}
+              className={`ocms-hero-slide ocms-hero-slide--${activeSlide.side === "left" ? "image-left" : "image-right"
+                } ${isFading ? "ocms-hero-slide--hidden" : ""}`}
             >
               <div className="ocms-hero-slide-media">
                 <img
@@ -483,9 +481,8 @@ export default function Home() {
                 {SLIDES.map((s, i) => (
                   <button
                     key={s.id}
-                    className={`ocms-hero-slider-dot ${
-                      i === slideIndex ? "ocms-hero-slider-dot--active" : ""
-                    }`}
+                    className={`ocms-hero-slider-dot ${i === slideIndex ? "ocms-hero-slider-dot--active" : ""
+                      }`}
                     onClick={() => {
                       setIsFading(true);
                       setTimeout(() => {
@@ -517,9 +514,8 @@ export default function Home() {
             {BOOKS.map((book) => (
               <button
                 key={book.id}
-                className={`ocms-bigbook-tab ${
-                  activeBookId === book.id ? "ocms-bigbook-tab--active" : ""
-                }`}
+                className={`ocms-bigbook-tab ${activeBookId === book.id ? "ocms-bigbook-tab--active" : ""
+                  }`}
                 onClick={() => handleSelectBook(book.id)}
               >
                 {book.title}
@@ -554,13 +550,11 @@ export default function Home() {
 
               {currentBook && currentSpread && (
                 <div
-                  className={`ocms-bigbook-3d ${
-                    turnDirection === "right"
-                      ? "ocms-bigbook-3d--turn-right"
-                      : ""
-                  } ${
-                    turnDirection === "left" ? "ocms-bigbook-3d--turn-left" : ""
-                  }`}
+                  className={`ocms-bigbook-3d ${turnDirection === "right"
+                    ? "ocms-bigbook-3d--turn-right"
+                    : ""
+                    } ${turnDirection === "left" ? "ocms-bigbook-3d--turn-left" : ""
+                    }`}
                 >
                   <div className="ocms-bigbook-pages">
                     <div className="ocms-bigbook-page ocms-bigbook-page--left">
