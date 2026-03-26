@@ -7,6 +7,7 @@ import CategoryPage from "../modules/complaint/category";
 import UserSidebar from "./UserSidebar";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../config';
 import { fetchWithAuth } from '../utils/apiClient';
 
 function UserDashboard() {
@@ -33,7 +34,7 @@ function UserDashboard() {
     console.log('Fetching stats using token');
     setLoadingStats(true);
     try {
-      const res = await fetchWithAuth('http://localhost:5000/api/complaints/stats');
+      const res = await fetchWithAuth(`${API_BASE_URL}/api/complaints/stats`);
       const body = await res.json();
       
       console.log('Stats response:', body);

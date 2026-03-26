@@ -1,6 +1,7 @@
 // src/staff/ApprovalDashboard.jsx
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { API_BASE_URL } from "../config";
 import "./approvalDashboard.css";
 
 const ROLE_LABEL = {
@@ -49,7 +50,7 @@ export default function ApprovalDashboard() {
   const fetchPending = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/staff-register/pending", {
+      const res = await fetch(`${API_BASE_URL}/api/staff-register/pending`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -74,7 +75,7 @@ export default function ApprovalDashboard() {
   const handleApprove = async (id) => {
     setActionLoading(id + "_approve");
     try {
-      const res = await fetch(`http://localhost:5000/api/staff-register/${id}/approve`, {
+      const res = await fetch(`${API_BASE_URL}/api/staff-register/${id}/approve`, {
         method: "PUT",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -93,7 +94,7 @@ export default function ApprovalDashboard() {
     if (!rejectId) return;
     setActionLoading(rejectId + "_reject");
     try {
-      const res = await fetch(`http://localhost:5000/api/staff-register/${rejectId}/reject`, {
+      const res = await fetch(`${API_BASE_URL}/api/staff-register/${rejectId}/reject`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,

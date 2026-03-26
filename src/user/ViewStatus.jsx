@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "./viewstatus.css";
 import UserSidebar from './UserSidebar';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../config';
 import { fetchWithAuth } from '../utils/apiClient';
 
 function ViewStatus() {
@@ -24,7 +25,7 @@ function ViewStatus() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetchWithAuth('http://localhost:5000/api/user-complaints');
+      const res = await fetchWithAuth(`${API_BASE_URL}/api/user-complaints`);
       const text = await res.text();
       const body = text ? JSON.parse(text) : {};
       if (res.ok && Array.isArray(body.complaints)) {

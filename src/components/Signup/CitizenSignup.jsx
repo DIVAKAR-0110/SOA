@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useAuth } from "../../context/AuthContext";
+import { API_BASE_URL } from "../../config";
 
 const initialForm = {
   firstName: "",
@@ -80,7 +81,7 @@ export default function CitizenSignup() {
 
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/request-mobile-otp", {
+      const res = await fetch(`${API_BASE_URL}/api/request-mobile-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mobile: form.mobile }),
@@ -108,7 +109,7 @@ export default function CitizenSignup() {
     }
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/verify-mobile-otp", {
+      const res = await fetch(`${API_BASE_URL}/api/verify-mobile-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mobile: form.mobile, otp: mobileOtp }),
@@ -144,7 +145,7 @@ export default function CitizenSignup() {
 
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/get_otp", {
+      const res = await fetch(`${API_BASE_URL}/get_otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -172,7 +173,7 @@ export default function CitizenSignup() {
     }
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/verify_otp", {
+      const res = await fetch(`${API_BASE_URL}/verify_otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: form.email, otp: emailOtp }),

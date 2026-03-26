@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { API_BASE_URL } from "../../config";
 import { fetchWithAuth } from "../../utils/apiClient";
 import "./profile.css";
 
@@ -10,7 +11,7 @@ export default function Profile() {
   useEffect(() => {
     if (!user) return;
 
-    fetchWithAuth("http://localhost:5000/api/user-profile")
+    fetchWithAuth(`${API_BASE_URL}/api/user-profile`)
       .then(res => res.json())
       .then(data => {
         setProfile(data.user);

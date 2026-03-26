@@ -1,6 +1,7 @@
 // src/components/StaffSignup/StaffSignup.jsx
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { API_BASE_URL } from "../../config";
 import "./StaffSignup.css";
 
 const LOCATION_API_BASE = import.meta.env.VITE_LOCATION_API_BASE || "";
@@ -158,7 +159,7 @@ export default function StaffSignup() {
 
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/staff-register/request-otp", {
+      const res = await fetch(`${API_BASE_URL}/api/staff-register/request-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -180,7 +181,7 @@ export default function StaffSignup() {
     if (!otp) return showMsg("Please enter the OTP.");
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/staff-register/verify-otp", {
+      const res = await fetch(`${API_BASE_URL}/api/staff-register/verify-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: form.email, otp }),

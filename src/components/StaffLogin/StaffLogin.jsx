@@ -1,6 +1,7 @@
 // src/components/StaffLogin/StaffLogin.jsx
 import { useState } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
+import { API_BASE_URL } from "../../config";
 import "./StaffLogin.css";
 
 const ROLE_LABEL = {
@@ -32,7 +33,7 @@ export default function StaffLogin() {
     if (!form.email || !form.password) return showMsg("Email and password are required.");
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/staff-register/login", {
+      const res = await fetch(`${API_BASE_URL}/api/staff-register/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -73,7 +74,7 @@ export default function StaffLogin() {
     setApplicationStatus(null);
     try {
       const res = await fetch(
-        `http://localhost:5000/api/staff-register/check-status?email=${encodeURIComponent(statusEmail)}`
+        `${API_BASE_URL}/api/staff-register/check-status?email=${encodeURIComponent(statusEmail)}`
       );
       const data = await res.json();
       if (!res.ok) return showMsg(data.message || "No application found.");

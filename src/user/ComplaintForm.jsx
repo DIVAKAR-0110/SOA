@@ -4,6 +4,7 @@ import "./complaintForm.css";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../config';
 import { getCategoryTitle, formLabels } from '../utils/i18n';
 import { fetchWithAuth } from '../utils/apiClient';
 import UserSidebar from './UserSidebar';
@@ -283,7 +284,7 @@ function ComplaintForm({ initialCategory = "" }) {
         fd.append("contact_time", formData.contact_time);
 
         console.log('Sending FormData complaint');
-        res = await fetchWithAuth('http://localhost:5000/api/complaints', { 
+        res = await fetchWithAuth(`${API_BASE_URL}/api/complaints`, { 
           method: "POST", 
           body: fd 
         });
@@ -301,7 +302,7 @@ function ComplaintForm({ initialCategory = "" }) {
           contact_time: formData.contact_time,
         };
         console.log('Sending JSON complaint with payload:', payload);
-        res = await fetchWithAuth('http://localhost:5000/api/complaints', {
+        res = await fetchWithAuth(`${API_BASE_URL}/api/complaints`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),

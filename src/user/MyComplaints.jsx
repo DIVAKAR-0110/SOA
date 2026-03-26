@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import "./myComplaints.css";
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../config';
 import { fetchWithAuth } from '../utils/apiClient';
 
 function formatId(id) {
@@ -47,7 +48,7 @@ function MyComplaints() {
 
       setLoading(true);
       try {
-        const res = await fetchWithAuth('http://localhost:5000/api/user-complaints');
+        const res = await fetchWithAuth(`${API_BASE_URL}/api/user-complaints`);
         const text = await res.text();
         let data = {};
         try { data = text ? JSON.parse(text) : {}; } catch (e) { data = {}; }

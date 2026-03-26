@@ -5,6 +5,7 @@ import "./CitizenLogin.css";
 import login from "../../assets/login.gif";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { API_BASE_URL } from "../../config";
 
 const slides = [
   {
@@ -42,7 +43,7 @@ export default function CitizenLogin({ onBack }) {
     return () => clearInterval(id);
   }, []);
 
-  const apiBase = "http://localhost:5000";
+  const apiBase = API_BASE_URL;
 
   const handlePasswordLogin = async (e) => {
     e.preventDefault();
